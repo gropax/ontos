@@ -45,7 +45,28 @@ namespace Ontos.Storage
             return await Transaction(t => DeleteContent(t, id));
         }
 
-        public async Task<Content> GetContent(IAsyncTransaction transaction, long id)
+        public async Task<Expression> GetExpression(long id)
+        {
+            return await Transaction(t => GetExpression(t, id));
+        }
+
+        public async Task<Expression> CreateExpression(NewExpression newExpression)
+        {
+            return await Transaction(t => CreateExpression(t, newExpression));
+        }
+
+        public async Task<Expression> UpdateExpression(UpdateExpression updateExpression)
+        {
+            return await Transaction(t => UpdateExpression(t, updateExpression));
+        }
+
+        public async Task<bool> DeleteExpression(long id)
+        {
+            return await Transaction(t => DeleteExpression(t, id));
+        }
+
+
+        private async Task<Content> GetContent(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
                 MATCH (c:Content)
@@ -57,18 +78,18 @@ namespace Ontos.Storage
             return content.FirstOrDefault();
         }
 
-        public async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
+        private async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
         {
             var cursor = await transaction.RunAsync(@"
                 CREATE (c:Content $content)
                 RETURN c",
-                new { content = new { details = newContent.Details } });
+                new { content = newContent.Properties });
 
             var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
             return content.First();
         }
 
-        public async Task<Content> UpdateContent(IAsyncTransaction transaction, UpdateContent updateContent)
+        private async Task<Content> UpdateContent(IAsyncTransaction transaction, UpdateContent updateContent)
         {
             var cursor = await transaction.RunAsync(@"
                 MATCH (c:Content)
@@ -78,14 +99,14 @@ namespace Ontos.Storage
                 new
                 {
                     id = updateContent.Id,
-                    content = new { details = updateContent.Details },
+                    content = updateContent.Properties,
                 });
 
             var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
             return content.First();
         }
 
-        public async Task<bool> DeleteContent(IAsyncTransaction transaction, long id)
+        private async Task<bool> DeleteContent(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
                 MATCH (c:Content)
@@ -98,6 +119,68 @@ namespace Ontos.Storage
             var content = await cursor.ToListAsync(r => r["id"].As<long>());
             return content.Count > 0;
         }
+
+
+
+        private async Task<Expression> GetExpression(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Expression)
+                WHERE id(c)=$id
+                RETURN c",
+                new { id });
+
+            var content = await cursor.ToListAsync(r => new Expression(r["c"].As<INode>()));
+            return content.FirstOrDefault();
+        }
+
+        private async Task<Expression> CreateExpression(IAsyncTransaction transaction, NewExpression newExpression)
+        {
+            var cursor = await transaction.RunAsync(@"
+                CREATE (e:Expression $expression)
+                RETURN e",
+                new { expression = newExpression.Properties });
+
+            var expression = await cursor.ToListAsync(r => new Expression(r["e"].As<INode>()));
+            return expression.First();
+        }
+
+        private async Task<Expression> UpdateExpression(IAsyncTransaction transaction, UpdateExpression updateExpression)
+        {
+            var setQueries = new List<string>();
+            if (updateExpression.Language != null)
+                setQueries.Add("e.language = $language");
+            if (updateExpression.Label != null)
+                setQueries.Add("e.label = $label");
+
+            var setQuery = string.Join(", ", setQueries);
+
+            var cursor = await transaction.RunAsync($@"
+                MATCH (e:Expression)
+                WHERE id(e) = $id
+                SET {setQuery}
+                RETURN e",
+                updateExpression.Properties);
+
+            var content = await cursor.ToListAsync(r => new Expression(r["e"].As<INode>()));
+            return content.First();
+        }
+
+        private async Task<bool> DeleteExpression(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (e:Expression)
+                WHERE id(e) = $id
+                WITH e, id(e) as id
+                DETACH DELETE e
+                RETURN id",
+                new { id });
+
+            var content = await cursor.ToListAsync(r => r["id"].As<long>());
+            return content.Count > 0;
+        }
+
+
 
         private async Task Transaction(Func<IAsyncTransaction, Task> func)
         {
@@ -144,6 +227,7 @@ namespace Ontos.Storage
     public class NewContent
     {
         public string Details { get; }
+        public object Properties => new { details = Details };
         public NewContent(string details)
         {
             Details = details;
@@ -154,6 +238,7 @@ namespace Ontos.Storage
     {
         public long Id { get; }
         public string Details { get; }
+        public object Properties => new { details = Details };
         public UpdateContent(long id, string details)
         {
             Id = id;
@@ -161,10 +246,36 @@ namespace Ontos.Storage
         }
     }
 
+    public class NewExpression
+    {
+        public string Language { get; }
+        public string Label { get; }
+        public object Properties => new { language = Language, label = Label };
+        public NewExpression(string language, string label)
+        {
+            Language = language;
+            Label = label;
+        }
+    }
+
+    public class UpdateExpression
+    {
+        public long Id { get; }
+        public string Language { get; }
+        public string Label { get; }
+        public object Properties => new { id = Id, language = Language, label = Label };
+        public UpdateExpression(long id, string language = null, string label = null)
+        {
+            Id = id;
+            Language = language;
+            Label = label;
+        }
+    }
+
     public class Content
     {
-        public long Id { get; set; }
-        public string Details { get; set; }
+        public long Id { get; }
+        public string Details { get; }
 
         public Content(long id, string details)
         {
@@ -206,8 +317,38 @@ namespace Ontos.Storage
     /// </summary>
     public class Expression
     {
-        public string Language { get; set; }
-        public string Label { get; set; }
+        public long Id { get; }
+        public string Language { get; }
+        public string Label { get; }
+
+        public Expression(long id, string language, string label)
+        {
+            Id = id;
+            Language = language;
+            Label = label;
+        }
+
+        public Expression(INode node)
+        {
+            Id = node.Id;
+            Language = node["language"].As<string>();
+            Label = node["label"].As<string>();
+        }
+
+        #region Equality methods
+        public override bool Equals(object obj)
+        {
+            return obj is Expression expression &&
+                   Id == expression.Id &&
+                   Language == expression.Language &&
+                   Label == expression.Label;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Language, Label);
+        }
+        #endregion
     }
 
     /// <summary>

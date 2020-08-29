@@ -61,5 +61,49 @@ namespace Ontos.Storage.Tests
             bool deleted = await _storage.DeleteContent(999);
             Assert.False(deleted);
         }
+
+        [Fact]
+        public async void TestCRUDExpression()
+        {
+            // CREATE
+            var newExpression = new NewExpression("fra", "Phénoménologie");
+            var createdExpression = await _storage.CreateExpression(newExpression);
+            Assert.True(createdExpression.Id > 0);
+            Assert.Equal("fra", createdExpression.Language);
+            Assert.Equal("Phénoménologie", createdExpression.Label);
+
+            // GET
+            var id = createdExpression.Id;
+            var getExpression = await _storage.GetExpression(id);
+            Assert.Equal(createdExpression, getExpression);
+
+            // UPDATE 1
+            var updateExpression = new UpdateExpression(id, language: "eng");
+            var updatedExpression = await _storage.UpdateExpression(updateExpression);
+            Assert.Equal("eng", updatedExpression.Language);
+            Assert.Equal("Phénoménologie", updatedExpression.Label);
+
+            // GET
+            getExpression = await _storage.GetExpression(id);
+            Assert.Equal(updatedExpression, getExpression);
+
+            // UPDATE 2
+            updateExpression = new UpdateExpression(id, label: "Phenomenology");
+            updatedExpression = await _storage.UpdateExpression(updateExpression);
+            Assert.Equal("eng", updatedExpression.Language);
+            Assert.Equal("Phenomenology", updatedExpression.Label);
+
+            // GET
+            getExpression = await _storage.GetExpression(id);
+            Assert.Equal(updatedExpression, getExpression);
+
+            // DELETE
+            bool deleted = await _storage.DeleteExpression(id);
+            Assert.True(deleted);
+
+            // GET
+            getExpression = await _storage.GetExpression(id);
+            Assert.Null(getExpression);
+        }
     }
 }
