@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -20,7 +21,8 @@ namespace Ontos.Storage.Tests
 
         public Task DisposeAsync()
         {
-            return _storage.DeleteAll();
+            //return _storage.DeleteAll();
+            return Task.CompletedTask;
         }
 
         [Fact]
@@ -104,6 +106,59 @@ namespace Ontos.Storage.Tests
             // GET
             getExpression = await _storage.GetExpression(id);
             Assert.Null(getExpression);
+        }
+
+        [Fact]
+        public async void TestDeleteExpression_NotFound()
+        {
+            bool deleted = await _storage.DeleteExpression(999);
+            Assert.False(deleted);
+        }
+
+        [Fact]
+        public async void TestCRUDReference()
+        {
+            var content = await _storage.CreateContent(new NewContent("Contenu super cool."));
+
+            // CREATE
+            var created = await _storage.CreateReference(new NewReference(
+                content.Id, "fra", "Phénoménologie"));
+            Assert.True(created.Id > 0);
+            Assert.Equal("fra", created.Expression.Language);
+            Assert.Equal("Phénoménologie", created.Expression.Label);
+
+            // GET
+            var getted = await _storage.GetReference(created.Id);
+            Assert.Equal(created, getted);
+
+            // DELETE
+            bool deleted = await _storage.DeleteReference(created.Id);
+            Assert.True(deleted);
+
+            // GET
+            getted = await _storage.GetReference(created.Id);
+            Assert.Null(getted);
+        }
+
+        [Fact]
+        public async void TestCreateReference_ExpressionExists()
+        {
+            var content = await _storage.CreateContent(new NewContent("Contenu super cool."));
+            var expression = await _storage.CreateExpression(new NewExpression("fra", "Phénoménologie"));
+
+            // CREATE
+            var created = await _storage.CreateReference(new NewReference(
+                content.Id, expression.Language, expression.Label));
+
+            Assert.True(created.Id > 0);
+            Assert.Equal(expression, created.Expression);
+        }
+
+        [Fact]
+        public async void TestDeleteReference_NotFound()
+        {
+            bool deleted = await _storage.DeleteReference(999);
+            Assert.False(deleted);
         }
     }
 }

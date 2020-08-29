@@ -47,7 +47,7 @@ namespace Ontos.Storage
 
         public async Task<Expression> GetExpression(long id)
         {
-            return await Transaction(t => GetExpression(t, id));
+            return await Transaction(t => GetExpressionById(t, id));
         }
 
         public async Task<Expression> CreateExpression(NewExpression newExpression)
@@ -64,6 +64,28 @@ namespace Ontos.Storage
         {
             return await Transaction(t => DeleteExpression(t, id));
         }
+
+
+
+        public async Task<Reference> GetReference(long id)
+        {
+            return await Transaction(t => GetReferenceById(t, id));
+        }
+
+        public async Task<Reference> CreateReference(NewReference newReference)
+        {
+            return await Transaction(async t =>
+            {
+                var expression = await CreateExpression(t, newReference.NewExpression);
+                return await CreateReference(t, newReference.ContentId, expression.Id);
+            });
+        }
+
+        public async Task<bool> DeleteReference(long id)
+        {
+            return await Transaction(t => DeleteReference(t, id));
+        }
+
 
 
         private async Task<Content> GetContent(IAsyncTransaction transaction, long id)
@@ -122,7 +144,7 @@ namespace Ontos.Storage
 
 
 
-        private async Task<Expression> GetExpression(IAsyncTransaction transaction, long id)
+        private async Task<Expression> GetExpressionById(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
                 MATCH (c:Expression)
@@ -134,10 +156,21 @@ namespace Ontos.Storage
             return content.FirstOrDefault();
         }
 
+        private async Task<Expression> GetExpression(IAsyncTransaction transaction, string language, string label)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Expression { language = $language, label = $label })
+                RETURN c",
+                new { language, label });
+
+            var content = await cursor.ToListAsync(r => new Expression(r["c"].As<INode>()));
+            return content.FirstOrDefault();
+        }
+
         private async Task<Expression> CreateExpression(IAsyncTransaction transaction, NewExpression newExpression)
         {
             var cursor = await transaction.RunAsync(@"
-                CREATE (e:Expression $expression)
+                MERGE (e:Expression {language: $expression.language, label: $expression.label})
                 RETURN e",
                 new { expression = newExpression.Properties });
 
@@ -173,6 +206,51 @@ namespace Ontos.Storage
                 WHERE id(e) = $id
                 WITH e, id(e) as id
                 DETACH DELETE e
+                RETURN id",
+                new { id });
+
+            var content = await cursor.ToListAsync(r => r["id"].As<long>());
+            return content.Count > 0;
+        }
+
+        
+
+        private async Task<Reference> GetReferenceById(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (e:Expression)-[r:REFER_TO]->(:Content)
+                WHERE id(r) = $id
+                RETURN r, e",
+                new { id });
+
+            var reference = await cursor.ToListAsync(r =>
+                Reference.WithoutContexts(r["r"].As<IRelationship>(), r["e"].As<INode>()));
+
+            return reference.FirstOrDefault();
+        }
+
+        private async Task<Reference> CreateReference(IAsyncTransaction transaction, long contentId, long expressionId)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Content), (e:Expression)
+                WHERE id(c) = $content_id AND id(e) = $expression_id
+                MERGE (e)-[r:REFER_TO]->(c)
+                RETURN r, e",
+                new { content_id = contentId, expression_id = expressionId });
+
+            var reference = await cursor.ToListAsync(r =>
+                Reference.WithoutContexts(r["r"].As<IRelationship>(), r["e"].As<INode>()));
+
+            return reference.First();
+        }
+
+        private async Task<bool> DeleteReference(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (:Expression)-[r:REFER_TO]->(:Content)
+                WHERE id(r) = $id
+                WITH r, id(r) as id
+                DELETE r
                 RETURN id",
                 new { id });
 
@@ -253,6 +331,26 @@ namespace Ontos.Storage
         public object Properties => new { language = Language, label = Label };
         public NewExpression(string language, string label)
         {
+            Language = language;
+            Label = label;
+        }
+    }
+
+    public class NewReference
+    {
+        public long ContentId { get; }
+        public string Language { get; }
+        public string Label { get; }
+        public NewExpression NewExpression => new NewExpression(Language, Label);
+        public object Properties => new
+        {
+            content_id = ContentId,
+            expression = new { language = Language, label = Label },
+        };
+
+        public NewReference(long contentId, string language, string label)
+        {
+            ContentId = contentId;
             Language = language;
             Label = label;
         }
@@ -356,6 +454,35 @@ namespace Ontos.Storage
     /// </summary>
     public class Reference
     {
-        public string[] Contexts { get; set; }
+        public long Id { get; set; }
+        public string[] Contexts { get; set; } = new string[0];
+        public Expression Expression { get; set; }
+
+        public Reference(long id, string[] contexts, Expression expression)
+        {
+            Id = id;
+            Contexts = contexts;
+            Expression = expression;
+        }
+
+        public static Reference WithoutContexts(IRelationship reference, INode expression)
+        {
+            return new Reference(reference.Id, new string[0], new Expression(expression));
+        }
+
+        #region Equality methods
+        public override bool Equals(object obj)
+        {
+            return obj is Reference reference &&
+                   Id == reference.Id &&
+                   Enumerable.SequenceEqual(Contexts, reference.Contexts) &&
+                   EqualityComparer<Expression>.Default.Equals(Expression, reference.Expression);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Contexts, Expression);
+        }
+        #endregion
     }
 }
