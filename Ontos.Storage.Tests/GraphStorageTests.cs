@@ -17,7 +17,7 @@ namespace Ontos.Storage.Tests
         {
             var newContent = new NewContent("Contenu super cool.");
 
-            var content = await _storage.CreateContent(newContent);
+            var content = await _storage.CreateContentAsync(newContent);
 
             Assert.True(content.Id > 0);
             Assert.Equal("Contenu super cool.", content.Details);

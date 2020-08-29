@@ -21,37 +21,41 @@ namespace Ontos.Storage
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
-        public async Task<Content> CreateContent(NewContent newContent)
+        private async Task<T> Transaction<T>(Func<IAsyncTransaction, Task<T>> func)
         {
             var session = _driver.AsyncSession();
-
+            var transaction = await session.BeginTransactionAsync();
             try
             {
-                var cursor = await session.RunAsync(@"
-                    CREATE (c:Content $content)
-                    RETURN c",
-                    new { content = new { details = newContent.Description } });
-
-                var content = await cursor.ToListAsync(r =>
-                {
-                    var node = r["c"].As<INode>();
-                    return new Content()
-                    {
-                        Id = node.Id,
-                        Details = node["details"].As<string>()
-                    };
-                });
-
-                return content.First();
+                var result = await func(transaction);
+                await transaction.CommitAsync();
+                return result;
             }
             catch
             {
+                await transaction.RollbackAsync();
                 throw;
             }
             finally
             {
                 await session.CloseAsync();
             }
+        }
+
+        public async Task<Content> CreateContentAsync(NewContent newContent)
+        {
+            return await Transaction(t => CreateContent(t, newContent));
+        }
+
+        public async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
+        {
+            var cursor = await transaction.RunAsync(@"
+                CREATE (c:Content $content)
+                RETURN c",
+                new { content = new { details = newContent.Description } });
+
+            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            return content.First();
         }
     }
 
@@ -68,6 +72,18 @@ namespace Ontos.Storage
     {
         public long Id { get; set; }
         public string Details { get; set; }
+
+        public Content(long id, string details)
+        {
+            Id = id;
+            Details = details;
+        }
+
+        public Content(INode node)
+        {
+            Id = node.Id;
+            Details = node["details"].As<string>();
+        }
     }
 
     public class Relation
