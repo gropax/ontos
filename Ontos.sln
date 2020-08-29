@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos", "Ontos\Ontos.csproj", "{8F130B8C-2939-4742-8C26-1C9098647661}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Storage", "Ontos.Storage\Ontos.Storage.csproj", "{C68C4EA8-10FC-4545-BB31-18045FF1038F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Storage.Tests", "Ontos.Storage.Tests\Ontos.Storage.Tests.csproj", "{5CC87769-BA33-4505-8857-8B38EFE7954E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8F130B8C-2939-4742-8C26-1C9098647661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F130B8C-2939-4742-8C26-1C9098647661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F130B8C-2939-4742-8C26-1C9098647661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68C4EA8-10FC-4545-BB31-18045FF1038F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68C4EA8-10FC-4545-BB31-18045FF1038F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68C4EA8-10FC-4545-BB31-18045FF1038F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68C4EA8-10FC-4545-BB31-18045FF1038F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CC87769-BA33-4505-8857-8B38EFE7954E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CC87769-BA33-4505-8857-8B38EFE7954E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CC87769-BA33-4505-8857-8B38EFE7954E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CC87769-BA33-4505-8857-8B38EFE7954E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
