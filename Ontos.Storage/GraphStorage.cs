@@ -20,6 +20,105 @@ namespace Ontos.Storage
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
+        public async Task DeleteAll()
+        {
+            await Transaction(t => t.RunAsync(@"MATCH (n) DETACH DELETE n"));
+        }
+
+        public async Task<Content> GetContent(long id)
+        {
+            return await Transaction(t => GetContent(t, id));
+        }
+
+        public async Task<Content> CreateContent(NewContent newContent)
+        {
+            return await Transaction(t => CreateContent(t, newContent));
+        }
+
+        public async Task<Content> UpdateContent(UpdateContent updateContent)
+        {
+            return await Transaction(t => UpdateContent(t, updateContent));
+        }
+
+        public async Task<bool> DeleteContent(long id)
+        {
+            return await Transaction(t => DeleteContent(t, id));
+        }
+
+        public async Task<Content> GetContent(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Content)
+                WHERE id(c)=$id
+                RETURN c",
+                new { id });
+
+            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            return content.FirstOrDefault();
+        }
+
+        public async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
+        {
+            var cursor = await transaction.RunAsync(@"
+                CREATE (c:Content $content)
+                RETURN c",
+                new { content = new { details = newContent.Details } });
+
+            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            return content.First();
+        }
+
+        public async Task<Content> UpdateContent(IAsyncTransaction transaction, UpdateContent updateContent)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Content)
+                WHERE id(c)=$id
+                SET c = $content
+                RETURN c",
+                new
+                {
+                    id = updateContent.Id,
+                    content = new { details = updateContent.Details },
+                });
+
+            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            return content.First();
+        }
+
+        public async Task<bool> DeleteContent(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (c:Content)
+                WHERE id(c)=$id
+                WITH c, id(c) as id
+                DETACH DELETE c
+                RETURN id",
+                new { id });
+
+            var content = await cursor.ToListAsync(r => r["id"].As<long>());
+            return content.Count > 0;
+        }
+
+        private async Task Transaction(Func<IAsyncTransaction, Task> func)
+        {
+            var session = _driver.AsyncSession();
+            var transaction = await session.BeginTransactionAsync();
+            try
+            {
+                await func(transaction);
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+        }
+
         private async Task<T> Transaction<T>(Func<IAsyncTransaction, Task<T>> func)
         {
             var session = _driver.AsyncSession();
@@ -40,30 +139,25 @@ namespace Ontos.Storage
                 await session.CloseAsync();
             }
         }
-
-        public async Task<Content> CreateContentAsync(NewContent newContent)
-        {
-            return await Transaction(t => CreateContent(t, newContent));
-        }
-
-        public async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
-        {
-            var cursor = await transaction.RunAsync(@"
-                CREATE (c:Content $content)
-                RETURN c",
-                new { content = new { details = newContent.Description } });
-
-            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
-            return content.First();
-        }
     }
 
     public class NewContent
     {
-        public string Description { get; }
-        public NewContent(string content)
+        public string Details { get; }
+        public NewContent(string details)
         {
-            Description = content;
+            Details = details;
+        }
+    }
+
+    public class UpdateContent
+    {
+        public long Id { get; }
+        public string Details { get; }
+        public UpdateContent(long id, string details)
+        {
+            Id = id;
+            Details = details;
         }
     }
 
@@ -83,6 +177,20 @@ namespace Ontos.Storage
             Id = node.Id;
             Details = node["details"].As<string>();
         }
+
+        #region Equality methods
+        public override bool Equals(object obj)
+        {
+            return obj is Content content &&
+                   Id == content.Id &&
+                   Details == content.Details;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Details);
+        }
+        #endregion
     }
 
     public class Relation
