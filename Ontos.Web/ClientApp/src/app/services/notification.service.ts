@@ -35,6 +35,11 @@ export class NotificationService {
     this.show(notif);
   }
 
+  public notifyInfo(header: string, body: string) {
+    var notif = new Notification(NotificationType.Info, header, body);
+    this.show(notif);
+  }
+
   public clear() {
     this.notifications$.next([]);
   }

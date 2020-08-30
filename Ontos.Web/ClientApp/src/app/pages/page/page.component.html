@@ -6,10 +6,17 @@
   <div class="container mt-4">
     <h1>
       <i>No name</i>
-      <button class="btn btn-outline-dark float-right mt-2" role="button" [routerLink]="['/pages', page.id, 'edit']">
-        <fa-icon [icon]="editIcon"></fa-icon>
-        Edit
-      </button>
+
+      <span class="btn-group float-right mt-2" role="group" aria-label="Basic example">
+        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'edit']">
+          <fa-icon [icon]="editIcon"></fa-icon>
+          Edit
+        </button>
+        <button class="btn btn-outline-dark" role="button" (click)="openModal(modalContent)">
+          <fa-icon [icon]="deleteIcon"></fa-icon>
+          Delete
+        </button>
+      </span>
     </h1>
   </div>
   <div class="container mt-4">
@@ -17,4 +24,8 @@
       {{ page.content }}
     </markdown>
   </div>
+
+  <ng-template #modalContent>
+    <app-confirm-modal [message]="deleteMessage" (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
+  </ng-template>
 </div>

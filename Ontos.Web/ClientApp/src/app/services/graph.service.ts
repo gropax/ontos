@@ -27,6 +27,10 @@ export class GraphService {
     return this.http.put<Page>(`api/pages`, params);
   }
 
+  public deletePage(id: string) {
+    return this.http.delete(`api/pages/${id}`);
+  }
+
   protected getPaginated<T>(url: string, pageParams: PaginationParams<T>,
     otherParams: { [param: string]: string } = {}): Observable<Paginated<T>>
   {

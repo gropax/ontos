@@ -22,6 +22,7 @@ import { SortableHeader } from './components/tables/sortable-header.component';
 import { PagePage } from './pages/page/page.component';
 import { PageEditPage } from './pages/page-edit/page-edit.component';
 import { EditPageFormComponent } from './components/forms/edit-page-form/edit-page-form.component';
+import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { EditPageFormComponent } from './components/forms/edit-page-form/edit-pa
     PagePage,
     PageEditPage,
     EditPageFormComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
