@@ -1,5 +1,5 @@
 import { Directive, Input, EventEmitter, Output } from '@angular/core';
-import { SortDirection, SortColumn, SortEvent } from '../models/pagination';
+import { SortDirection, SortColumn, SortEvent } from '../../models/pagination';
 
 
 const rotate: {[key: string]: SortDirection} = { 'asc': 'desc', 'desc': '', '': 'asc' };

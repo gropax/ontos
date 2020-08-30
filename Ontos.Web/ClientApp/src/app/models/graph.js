@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Content = /** @class */ (function () {
     function Content(id, details) {
         this.id = id;
@@ -5,4 +7,12 @@ var Content = /** @class */ (function () {
     }
     return Content;
 }());
-//# sourceMappingURL=content.js.map
+exports.Content = Content;
+var NewContent = /** @class */ (function () {
+    function NewContent(details) {
+        this.details = details;
+    }
+    return NewContent;
+}());
+exports.NewContent = NewContent;
+//# sourceMappingURL=graph.js.map

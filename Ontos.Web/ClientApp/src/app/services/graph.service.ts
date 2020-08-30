@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { PaginationParams, Paginated } from '../models/pagination';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Content, NewContent } from '../models/graph';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ export class GraphService {
 
   public getContentList(params: PaginationParams<Content>) {
     return this.getPaginated(`api/graph`, params);
+  }
+
+  public createPage(params: NewContent) {
+    return this.http.post<Content>(`api/graph`, params);
   }
 
   protected getPaginated<T>(url: string, pageParams: PaginationParams<T>,

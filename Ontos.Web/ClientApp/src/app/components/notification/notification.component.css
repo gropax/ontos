@@ -1,0 +1,16 @@
+:host {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 2em;
+  z-index: 1049;
+}
+
+.toast {
+  width: 400px;
+}
+
+/*.toast {
+  background-color: #ffc9c9;
+}
+*/

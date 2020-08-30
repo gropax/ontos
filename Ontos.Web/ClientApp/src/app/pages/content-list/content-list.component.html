@@ -6,4 +6,10 @@
   </button>
 </h1>
 
-<app-content-table></app-content-table>
+<div class="container mt-4">
+  <app-content-table></app-content-table>
+</div>
+
+<ng-template #modalContent>
+  <app-new-content-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-content-modal>
+</ng-template>

@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SortColumn, SortDirection, PaginationParams, SortEvent } from '../../models/pagination';
+import { SortColumn, SortDirection, PaginationParams, SortEvent } from '../../../models/pagination';
 import { SortableHeader } from '../sortable-header.component';
-import { GraphService } from '../../services/graph.service';
-import { ConfigService } from '../../services/config.service';
+import { GraphService } from '../../../services/graph.service';
+import { ConfigService } from '../../../services/config.service';
+import { Content } from '../../../models/graph';
 
 @Component({
   selector: 'app-content-table',

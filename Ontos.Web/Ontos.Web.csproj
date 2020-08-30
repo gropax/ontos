@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\app\components\forms\" />
+    <Folder Include="ClientApp\src\app\components\modals\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 
