@@ -12,7 +12,9 @@
           <fa-icon [icon]="editIcon"></fa-icon>
           Edit
         </button>
-        <button class="btn btn-outline-dark" role="button" (click)="openModal(modalContent)">
+        <button class="btn btn-outline-dark"
+                no-hover-class="btn-outline-dark"
+                hover-class="btn-outline-danger" role="button" (click)="openModal(modalContent)">
           <fa-icon [icon]="deleteIcon"></fa-icon>
           Delete
         </button>
@@ -20,12 +22,14 @@
     </h1>
   </div>
   <div class="container mt-4">
+    <hr />
     <markdown katex>
       {{ page.content }}
     </markdown>
   </div>
 
   <ng-template #modalContent>
-    <app-confirm-modal [message]="deleteMessage" (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
+    <app-confirm-modal [message]="deleteMessage"
+                       (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
   </ng-template>
 </div>

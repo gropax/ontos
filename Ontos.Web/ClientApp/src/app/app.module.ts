@@ -23,6 +23,7 @@ import { PagePage } from './pages/page/page.component';
 import { PageEditPage } from './pages/page-edit/page-edit.component';
 import { EditPageFormComponent } from './components/forms/edit-page-form/edit-page-form.component';
 import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
+import { HoverClassDirective } from './directives/hover-class.directive';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm
     PageEditPage,
     EditPageFormComponent,
     ConfirmModalComponent,
+    HoverClassDirective,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
