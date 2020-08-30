@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-content-list',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./content-list.component.css']
 })
 export class ContentListPage implements OnInit {
+
+  faPlus = faPlus;
 
   constructor() { }
 

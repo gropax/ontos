@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -31,6 +32,7 @@ import { ContentTableComponent } from './components/content-table/content-table.
       { path: 'content', component: ContentListPage },
     ]),
     NgbPaginationModule,
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
