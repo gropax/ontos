@@ -1,0 +1,11 @@
+<div *ngIf="loading" ngElse="">
+  <p>Loading...</p>
+</div>
+<div *ngIf="!loading" ngElse="">
+  <div class="container mt-2">
+    <h1><i>No name</i></h1>
+  </div>
+  <div class="container mt-4">
+    <p>{{ page.content }}</p>
+  </div>
+</div>

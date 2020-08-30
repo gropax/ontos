@@ -18,6 +18,7 @@ import { NewPageFormComponent } from './components/forms/new-page-form/new-page-
 import { NewPageModalComponent } from './components/modals/new-page-modal/new-page-modal.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { SortableHeader } from './components/tables/sortable-header.component';
+import { PagePage } from './pages/page/page.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SortableHeader } from './components/tables/sortable-header.component';
     NotificationComponent,
     PageTableComponent,
     NewPageFormComponent,
-    NewPageModalComponent
+    NewPageModalComponent,
+    PagePage
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -39,7 +41,8 @@ import { SortableHeader } from './components/tables/sortable-header.component';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: PageListPage, pathMatch: 'full' },
-      { path: 'page', component: PageListPage },
+      { path: 'pages', component: PageListPage },
+      { path: 'pages/:id', component: PagePage },
     ]),
     NgbPaginationModule,
     NgbToastModule,

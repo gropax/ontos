@@ -15,6 +15,10 @@ export class GraphService {
     return this.getPaginated(`api/pages`, params);
   }
 
+  public getPage(id: string) {
+    return this.http.get<Page>(`api/pages/${id}`);
+  }
+
   public createPage(params: NewPage) {
     return this.http.post<Page>(`api/pages`, params);
   }
