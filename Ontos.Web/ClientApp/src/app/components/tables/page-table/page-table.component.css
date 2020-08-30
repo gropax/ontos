@@ -19,3 +19,9 @@ th[sortable].desc:before {
   transform: rotate(180deg);
   -ms-transform: rotate(180deg);
 }
+
+tbody tr {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}

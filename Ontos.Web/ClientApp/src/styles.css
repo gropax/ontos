@@ -15,21 +15,23 @@ code {
   border-color: #1861ac;
 }
 
-
 @font-face {
   font-family: "Computer Modern";
   src: url(/assets/fonts/cmunrm.otf);
 }
+
 @font-face {
   font-family: "Computer Modern";
   src: url(/assets/fonts/cmunsx.otf);
   font-weight: bold;
 }
+
 @font-face {
   font-family: "Computer Modern";
   src: url(/assets/fonts/cmunrm.otf);
   font-style: italic, oblique;
 }
+
 @font-face {
   font-family: "Computer Modern";
   src: url(/assets/fonts/cmunbxo.otf);
