@@ -30,7 +30,10 @@
   <ItemGroup>
     <Folder Include="ClientApp\src\app\components\forms\" />
     <Folder Include="ClientApp\src\app\components\modals\" />
-    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ontos.Storage\Ontos.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using Neo4j.Driver;
+using Ontos.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,7 +97,7 @@ namespace Ontos.Storage
                 RETURN c",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
             return content.FirstOrDefault();
         }
 
@@ -107,7 +108,7 @@ namespace Ontos.Storage
                 RETURN c",
                 new { content = newContent.Properties });
 
-            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
             return content.First();
         }
 
@@ -124,7 +125,7 @@ namespace Ontos.Storage
                     content = updateContent.Properties,
                 });
 
-            var content = await cursor.ToListAsync(r => new Content(r["c"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
             return content.First();
         }
 
@@ -152,7 +153,7 @@ namespace Ontos.Storage
                 RETURN c",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => new Expression(r["c"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Expression(r["c"].As<INode>()));
             return content.FirstOrDefault();
         }
 
@@ -163,7 +164,7 @@ namespace Ontos.Storage
                 RETURN c",
                 new { language, label });
 
-            var content = await cursor.ToListAsync(r => new Expression(r["c"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Expression(r["c"].As<INode>()));
             return content.FirstOrDefault();
         }
 
@@ -174,7 +175,7 @@ namespace Ontos.Storage
                 RETURN e",
                 new { expression = newExpression.Properties });
 
-            var expression = await cursor.ToListAsync(r => new Expression(r["e"].As<INode>()));
+            var expression = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
             return expression.First();
         }
 
@@ -195,7 +196,7 @@ namespace Ontos.Storage
                 RETURN e",
                 updateExpression.Properties);
 
-            var content = await cursor.ToListAsync(r => new Expression(r["e"].As<INode>()));
+            var content = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
             return content.First();
         }
 
@@ -224,7 +225,7 @@ namespace Ontos.Storage
                 new { id });
 
             var reference = await cursor.ToListAsync(r =>
-                Reference.WithoutContexts(r["r"].As<IRelationship>(), r["e"].As<INode>()));
+                Map.Reference(r["r"].As<IRelationship>(), r["e"].As<INode>()));
 
             return reference.FirstOrDefault();
         }
@@ -239,7 +240,7 @@ namespace Ontos.Storage
                 new { content_id = contentId, expression_id = expressionId });
 
             var reference = await cursor.ToListAsync(r =>
-                Reference.WithoutContexts(r["r"].As<IRelationship>(), r["e"].As<INode>()));
+                Map.Reference(r["r"].As<IRelationship>(), r["e"].As<INode>()));
 
             return reference.First();
         }
@@ -300,189 +301,5 @@ namespace Ontos.Storage
                 await session.CloseAsync();
             }
         }
-    }
-
-    public class NewContent
-    {
-        public string Details { get; }
-        public object Properties => new { details = Details };
-        public NewContent(string details)
-        {
-            Details = details;
-        }
-    }
-
-    public class UpdateContent
-    {
-        public long Id { get; }
-        public string Details { get; }
-        public object Properties => new { details = Details };
-        public UpdateContent(long id, string details)
-        {
-            Id = id;
-            Details = details;
-        }
-    }
-
-    public class NewExpression
-    {
-        public string Language { get; }
-        public string Label { get; }
-        public object Properties => new { language = Language, label = Label };
-        public NewExpression(string language, string label)
-        {
-            Language = language;
-            Label = label;
-        }
-    }
-
-    public class NewReference
-    {
-        public long ContentId { get; }
-        public string Language { get; }
-        public string Label { get; }
-        public NewExpression NewExpression => new NewExpression(Language, Label);
-        public object Properties => new
-        {
-            content_id = ContentId,
-            expression = new { language = Language, label = Label },
-        };
-
-        public NewReference(long contentId, string language, string label)
-        {
-            ContentId = contentId;
-            Language = language;
-            Label = label;
-        }
-    }
-
-    public class UpdateExpression
-    {
-        public long Id { get; }
-        public string Language { get; }
-        public string Label { get; }
-        public object Properties => new { id = Id, language = Language, label = Label };
-        public UpdateExpression(long id, string language = null, string label = null)
-        {
-            Id = id;
-            Language = language;
-            Label = label;
-        }
-    }
-
-    public class Content
-    {
-        public long Id { get; }
-        public string Details { get; }
-
-        public Content(long id, string details)
-        {
-            Id = id;
-            Details = details;
-        }
-
-        public Content(INode node)
-        {
-            Id = node.Id;
-            Details = node["details"].As<string>();
-        }
-
-        #region Equality methods
-        public override bool Equals(object obj)
-        {
-            return obj is Content content &&
-                   Id == content.Id &&
-                   Details == content.Details;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Details);
-        }
-        #endregion
-    }
-
-    public class Relation
-    {
-        public int Id { get; set; }
-        public string Details { get; set; }
-    }
-
-    /// <summary>
-    /// In relation with :
-    ///   - Content through a Reference relation
-    ///   - Expression through a Translation relation
-    /// </summary>
-    public class Expression
-    {
-        public long Id { get; }
-        public string Language { get; }
-        public string Label { get; }
-
-        public Expression(long id, string language, string label)
-        {
-            Id = id;
-            Language = language;
-            Label = label;
-        }
-
-        public Expression(INode node)
-        {
-            Id = node.Id;
-            Language = node["language"].As<string>();
-            Label = node["label"].As<string>();
-        }
-
-        #region Equality methods
-        public override bool Equals(object obj)
-        {
-            return obj is Expression expression &&
-                   Id == expression.Id &&
-                   Language == expression.Language &&
-                   Label == expression.Label;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Language, Label);
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Represent a denotation relation between an Expression and a Content, in zero or many specific Contexts
-    /// </summary>
-    public class Reference
-    {
-        public long Id { get; set; }
-        public string[] Contexts { get; set; } = new string[0];
-        public Expression Expression { get; set; }
-
-        public Reference(long id, string[] contexts, Expression expression)
-        {
-            Id = id;
-            Contexts = contexts;
-            Expression = expression;
-        }
-
-        public static Reference WithoutContexts(IRelationship reference, INode expression)
-        {
-            return new Reference(reference.Id, new string[0], new Expression(expression));
-        }
-
-        #region Equality methods
-        public override bool Equals(object obj)
-        {
-            return obj is Reference reference &&
-                   Id == reference.Id &&
-                   Enumerable.SequenceEqual(Contexts, reference.Contexts) &&
-                   EqualityComparer<Expression>.Default.Equals(Expression, reference.Expression);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Contexts, Expression);
-        }
-        #endregion
     }
 }

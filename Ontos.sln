@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Storage", "Ontos.Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Web", "Ontos.Web\Ontos.Web.csproj", "{E2C288BB-A42C-46EB-850A-40F389551D94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Web.Contracts", "Ontos.Web.Contracts\Ontos.Web.Contracts.csproj", "{BE08A5A0-7B5B-44BF-972F-BDA2C5990CD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ontos.Contracts", "Ontos.Contracts\Ontos.Contracts.csproj", "{D27C7809-30E9-4012-83B0-193D7EE08587}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{E2C288BB-A42C-46EB-850A-40F389551D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2C288BB-A42C-46EB-850A-40F389551D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2C288BB-A42C-46EB-850A-40F389551D94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE08A5A0-7B5B-44BF-972F-BDA2C5990CD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE08A5A0-7B5B-44BF-972F-BDA2C5990CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE08A5A0-7B5B-44BF-972F-BDA2C5990CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE08A5A0-7B5B-44BF-972F-BDA2C5990CD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D27C7809-30E9-4012-83B0-193D7EE08587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27C7809-30E9-4012-83B0-193D7EE08587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27C7809-30E9-4012-83B0-193D7EE08587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27C7809-30E9-4012-83B0-193D7EE08587}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
