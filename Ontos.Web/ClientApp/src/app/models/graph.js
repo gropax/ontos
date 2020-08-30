@@ -15,4 +15,12 @@ var NewPage = /** @class */ (function () {
     return NewPage;
 }());
 exports.NewPage = NewPage;
+var UpdatePage = /** @class */ (function () {
+    function UpdatePage(id, content) {
+        this.id = id;
+        this.content = content;
+    }
+    return UpdatePage;
+}());
+exports.UpdatePage = UpdatePage;
 //# sourceMappingURL=graph.js.map

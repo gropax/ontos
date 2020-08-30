@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Page } from '../../models/graph';
 import { ActivatedRoute } from '@angular/router';
 import { GraphService } from '../../services/graph.service';
+import { faPenFancy, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-page',
@@ -13,6 +14,8 @@ export class PagePage implements OnInit {
   private pageId: string;
   private page: Page;
   private loading: boolean = false;
+
+  editIcon = faPenNib;
 
   constructor(
     private route: ActivatedRoute,

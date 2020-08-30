@@ -12,3 +12,10 @@ export class NewPage {
     public content: string) {
   }
 }
+
+export class UpdatePage {
+  constructor(
+    public id: number,
+    public content: string) {
+  }
+}

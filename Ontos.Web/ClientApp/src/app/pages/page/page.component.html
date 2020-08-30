@@ -1,9 +1,16 @@
 <div *ngIf="loading" ngElse="">
   <p>Loading...</p>
 </div>
+
 <div *ngIf="!loading" class="page-content" ngElse="">
   <div class="container mt-4">
-    <h1><i>No name</i></h1>
+    <h1>
+      <i>No name</i>
+      <button class="btn btn-outline-dark float-right mt-2" role="button" [routerLink]="['/pages', page.id, 'edit']">
+        <fa-icon [icon]="editIcon"></fa-icon>
+        Edit
+      </button>
+    </h1>
   </div>
   <div class="container mt-4">
     <markdown katex>

@@ -20,6 +20,8 @@ import { NewPageModalComponent } from './components/modals/new-page-modal/new-pa
 import { NotificationComponent } from './components/notification/notification.component';
 import { SortableHeader } from './components/tables/sortable-header.component';
 import { PagePage } from './pages/page/page.component';
+import { PageEditPage } from './pages/page-edit/page-edit.component';
+import { EditPageFormComponent } from './components/forms/edit-page-form/edit-page-form.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { PagePage } from './pages/page/page.component';
     PageTableComponent,
     NewPageFormComponent,
     NewPageModalComponent,
-    PagePage
+    PagePage,
+    PageEditPage,
+    EditPageFormComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -44,6 +48,7 @@ import { PagePage } from './pages/page/page.component';
       { path: '', component: PageListPage, pathMatch: 'full' },
       { path: 'pages', component: PageListPage },
       { path: 'pages/:id', component: PagePage },
+      { path: 'pages/:id/edit', component: PageEditPage },
     ]),
     NgbPaginationModule,
     NgbToastModule,
