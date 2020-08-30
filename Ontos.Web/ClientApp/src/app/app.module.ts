@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { NgbPaginationModule, NgbToastModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TimeagoModule } from 'ngx-timeago';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -49,6 +50,7 @@ import { PagePage } from './pages/page/page.component';
     NgbModalModule,
     FontAwesomeModule,
     TimeagoModule.forRoot(),
+    MarkdownModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]
