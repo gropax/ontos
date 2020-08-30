@@ -12,7 +12,7 @@ export class GraphService {
   constructor(private http: HttpClient) { }
 
   public getContentList(params: PaginationParams<Page>) {
-    return this.getPaginated(`api/graph`, params);
+    return this.getPaginated(`api/pages`, params);
   }
 
   public createPage(params: NewPage) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Ontos.Contracts
         public int PageSize { get; }
         public TColumn SortColumn { get; }
         public SortDirection SortDirection { get; }
+        public int Skip => (Page - 1) * PageSize;
 
         public PaginationParams(int page, int pageSize, TColumn sortColumn, SortDirection sortDirection)
         {
@@ -39,6 +41,17 @@ namespace Ontos.Contracts
             SortDirection = sortDirection;
             Total = total;
             Items = items;
+        }
+
+        public static Paginated<TItem> FromParams<TColumn>(PaginationParams<TColumn> p, long total, TItem[] items)
+        {
+            return new Paginated<TItem>(
+                p.Page,
+                p.PageSize,
+                p.SortColumn.ToString(),
+                p.SortDirection,
+                total,
+                items);
         }
     }
 

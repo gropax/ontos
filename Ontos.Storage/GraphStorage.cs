@@ -10,6 +10,7 @@ namespace Ontos.Storage
 {
     public interface IGraphStorage
     {
+        Task<Paginated<Page>> GetPages(PaginationParams<PageSortKey> @params);
         Task<Page> GetPage(long id);
         Task<Page> CreatePage(NewPage newPage);
         Task<Page> UpdatePage(UpdatePage updatePage);
@@ -28,6 +29,16 @@ namespace Ontos.Storage
         public async Task DeleteAll()
         {
             await Transaction(t => t.RunAsync(@"MATCH (n) DETACH DELETE n"));
+        }
+
+        public async Task<Paginated<Page>> GetPages(PaginationParams<PageSortKey> @params)
+        {
+            return await Transaction(async t =>
+            {
+                var total = await CountPages(t);
+                var pages = await GetPages(t, @params);
+                return Paginated<Page>.FromParams(@params, total, pages);
+            });
         }
 
         public async Task<Page> GetPage(long id)
@@ -92,6 +103,44 @@ namespace Ontos.Storage
         }
 
 
+        private async Task<long> CountPages(IAsyncTransaction transaction)
+        {
+            var cursor = await transaction.RunAsync($@"
+                MATCH (:Page)
+                RETURN count(*) as count");
+
+            var count = await cursor.ToListAsync(r => r["count"].As<long>());
+            return count.First();
+        }
+
+        private async Task<Page[]> GetPages(IAsyncTransaction transaction, PaginationParams<PageSortKey> p)
+        {
+            var sortKey = GetSortKey(p.SortColumn);
+            var desc = p.SortDirection == SortDirection.DESC ? "DESC" : "";
+
+            var cursor = await transaction.RunAsync($@"
+                MATCH (p:Page)
+                RETURN p
+                ORDER BY p.{sortKey} {desc}
+                SKIP {p.Skip}
+                LIMIT {p.PageSize}");
+
+            var pages = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
+            return pages.ToArray();
+        }
+
+        private string GetSortKey(PageSortKey sortKey)
+        {
+            switch (sortKey)
+            {
+                case PageSortKey.CreatedAt:
+                    return "created_at";
+                case PageSortKey.UpdatedAt:
+                    return "updated_at";
+                default:
+                    throw new NotImplementedException($"Unsupported page sort key [{sortKey}].");
+            }
+        }
 
         private async Task<Page> GetPage(IAsyncTransaction transaction, long id)
         {
@@ -121,7 +170,7 @@ namespace Ontos.Storage
             var cursor = await transaction.RunAsync(@"
                 MATCH (p:Page)
                 WHERE id(p)=$id
-                SET p = $page
+                SET p += $page
                 RETURN p",
                 new
                 {

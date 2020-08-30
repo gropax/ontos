@@ -8,6 +8,7 @@ using Ontos.Contracts;
 using Ontos.Storage;
 using Ontos.Web.Contracts;
 using Ontos.Web.Validation;
+using Scenes.Web.Contracts;
 
 namespace Scenes.Web.Controllers
 {
@@ -26,15 +27,17 @@ namespace Scenes.Web.Controllers
         /// Get paginated pages
         /// </summary>
         /// <response code="200">Paginated pages</response>
-        //[HttpGet]
-        //[ProducesResponseType(typeof(Paginated<PageDto[]>), 200)]
-        //public IActionResult GetPages()
-        //{
-        //    var pages = _storage.GetPages()
-        //        .Map(s => new PageDto(s)).ToArray();
+        [HttpGet]
+        [ProducesResponseType(typeof(Paginated<PageDto[]>), 200)]
+        public async Task<IActionResult> GetPages(int page, int pageSize, string sortColumn, string sortDirection)
+        {
+            var paginationParams = GetPagePagination(page, pageSize, sortColumn, sortDirection);
 
-        //    return Ok(pages);
-        //}
+            var pages = await _storage.GetPages(paginationParams.ToModel());
+            var dtos = pages.Map(s => new PageDto(s));
+
+            return Ok(pages);
+        }
 
         /// <summary>
         /// Get an existing page
@@ -103,6 +106,18 @@ namespace Scenes.Web.Controllers
                 return Ok();
             else
                 return NotFound($"Dataset not found for id [{id}].");
+        }
+
+        
+        private static PaginationParamsDto<PageSortKey> GetPagePagination(int page, int pageSize, string sortColumn, string sortDirection)
+        {
+            if (string.IsNullOrWhiteSpace(sortDirection))
+            {
+                sortColumn = "updatedAt";
+                sortDirection = "desc";
+            }
+
+            return new PaginationParamsDto<PageSortKey>(page, pageSize, sortColumn, sortDirection);
         }
 
     }

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { NgbPaginationModule, NgbToastModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TimeagoModule } from 'ngx-timeago';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -16,12 +17,14 @@ import { ContentTableComponent } from './components/tables/content-table/content
 import { NewContentFormComponent } from './components/forms/new-content-form/new-content-form.component';
 import { NewContentModalComponent } from './components/modals/new-content-modal/new-content-modal.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { SortableHeader } from './components/tables/sortable-header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
+    SortableHeader,
     ContentListPage,
     PaginationComponent,
     NotificationComponent,
@@ -42,6 +45,7 @@ import { NotificationComponent } from './components/notification/notification.co
     NgbToastModule,
     NgbModalModule,
     FontAwesomeModule,
+    TimeagoModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

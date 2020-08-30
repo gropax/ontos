@@ -5,19 +5,21 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
-          <th scope="col" sortable="datasetGuid" (sort)="onSort($event)">Details</th>
-          <th scope="col" sortable="createdAt" (sort)="onSort($event)">Created at</th>
-          <th scope="col" sortable="updatedAt" (sort)="onSort($event)">Updated at</th>
+          <th scope="col" (sort)="onSort($event)">ID</th>
+          <th scope="col" (sort)="onSort($event)">Name</th>
+          <th scope="col" (sort)="onSort($event)">Content</th>
+          <th scope="col" sortable="createdAt" (sort)="onSort($event)">Created</th>
+          <th scope="col" sortable="updatedAt" (sort)="onSort($event)">Updated</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let task of tasks$ | async; let idx = index">
+        <tr *ngFor="let page of pages$ | async; let idx = index">
           <th scope="row">{{ startIndex + idx + 1 }}</th>
+          <td>{{ page.id }}</td>
           <td>{{ 'task.name' }}</td>
-          <td>{{ task.details }}</td>
-          <td>{{ 'task.createdAt | timeago' }}</td>
-          <td>{{ 'task.updatedAt | timeago' }}</td>
+          <td>{{ page.content }}</td>
+          <td>{{ page.createdAt | timeago }}</td>
+          <td>{{ page.updatedAt | timeago }}</td>
         </tr>
       </tbody>
     </table>

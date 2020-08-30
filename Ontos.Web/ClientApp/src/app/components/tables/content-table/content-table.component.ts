@@ -15,7 +15,7 @@ export class ContentTableComponent implements OnInit {
 
   private loading = false;
   private total$ = new BehaviorSubject<number>(0);
-  private content$ = new BehaviorSubject<Page[]>([]);
+  private pages$ = new BehaviorSubject<Page[]>([]);
 
   private page: number = 1;
   private pageSize: number;
@@ -42,7 +42,7 @@ export class ContentTableComponent implements OnInit {
       .getContentList(new PaginationParams(this.page, this.pageSize, this.sortColumn, this.sortDirection))
       .subscribe(page => {
         this.loading = false;
-        this.content$.next(page.items);
+        this.pages$.next(page.items);
         this.total$.next(page.total);
       });
   }
