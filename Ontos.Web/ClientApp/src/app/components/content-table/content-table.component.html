@@ -1,0 +1,33 @@
+<div class="mt-4">
+
+  <div *ngIf="(total$ | async) > 0">
+    <table class="table table-striped" [class.blurred]="loading">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
+          <th scope="col" sortable="datasetGuid" (sort)="onSort($event)">Details</th>
+          <th scope="col" sortable="createdAt" (sort)="onSort($event)">Created at</th>
+          <th scope="col" sortable="updatedAt" (sort)="onSort($event)">Updated at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks$ | async; let idx = index">
+          <th scope="row">{{ startIndex + idx + 1 }}</th>
+          <td>{{ 'task.name' }}</td>
+          <td>{{ task.details }}</td>
+          <td>{{ 'task.createdAt | timeago' }}</td>
+          <td>{{ 'task.updatedAt | timeago' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <app-pagination [total$]="total$" [(page)]="page" [(pageSize)]="pageSize" (pageChange)="onPageChanged($event)" (pageSizeChange)="onPageSizeChanged($event)"></app-pagination>
+  </div>
+
+  <div class="jumbotron" *ngIf="(total$ | async) == 0">
+    <h2>No content</h2>
+    <p class="lead">Create a page to see it appear here.</p>
+  </div>
+
+</div>
