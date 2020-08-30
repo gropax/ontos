@@ -7,9 +7,9 @@
 </h1>
 
 <div class="container mt-4">
-  <app-content-table></app-content-table>
+  <app-page-table></app-page-table>
 </div>
 
 <ng-template #modalContent>
-  <app-new-content-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-content-modal>
+  <app-new-page-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-page-modal>
 </ng-template>

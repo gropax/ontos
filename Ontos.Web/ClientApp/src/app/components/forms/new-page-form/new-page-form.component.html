@@ -1,0 +1,13 @@
+<form [formGroup]="pageForm" #formDir="ngForm">
+
+  <div class="form-group">
+    <label for="content">Content</label>
+    <textarea id="content" class="form-control" ngbAutofocus formControlName="content" rows="10" required ></textarea>
+    <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">
+      <div *ngIf="content.errors.required">
+        Content is required.
+      </div>
+    </div>
+  </div>
+
+</form>

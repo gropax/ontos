@@ -7,11 +7,11 @@ import { Router } from '@angular/router';
 import { Page } from '../../models/graph';
 
 @Component({
-  selector: 'app-content-list',
-  templateUrl: './content-list.component.html',
-  styleUrls: ['./content-list.component.css']
+  selector: 'app-page-list',
+  templateUrl: './page-list.component.html',
+  styleUrls: ['./page-list.component.css']
 })
-export class ContentListPage implements OnInit {
+export class PageListPage implements OnInit {
 
   private modal: NgbModalRef;
 

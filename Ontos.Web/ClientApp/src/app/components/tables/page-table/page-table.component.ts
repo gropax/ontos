@@ -7,11 +7,11 @@ import { ConfigService } from '../../../services/config.service';
 import { Page } from '../../../models/graph';
 
 @Component({
-  selector: 'app-content-table',
-  templateUrl: './content-table.component.html',
-  styleUrls: ['./content-table.component.css']
+  selector: 'app-page-table',
+  templateUrl: './page-table.component.html',
+  styleUrls: ['./page-table.component.css']
 })
-export class ContentTableComponent implements OnInit {
+export class PageTableComponent implements OnInit {
 
   private loading = false;
   private total$ = new BehaviorSubject<number>(0);

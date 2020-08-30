@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewContentModalComponent } from './new-content-modal.component';
+import { PageListPage } from './page-list.component';
 
-describe('NewContentModalComponent', () => {
-  let component: NewContentModalComponent;
-  let fixture: ComponentFixture<NewContentModalComponent>;
+describe('PageListPage', () => {
+  let component: PageListPage;
+  let fixture: ComponentFixture<PageListPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewContentModalComponent ]
+      declarations: [ PageListPage ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewContentModalComponent);
+    fixture = TestBed.createComponent(PageListPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

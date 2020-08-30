@@ -11,11 +11,11 @@ import { TimeagoModule } from 'ngx-timeago';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { ContentListPage } from './pages/content-list/content-list.component';
+import { PageListPage } from './pages/page-list/page-list.component';
 import { PaginationComponent } from './components/tables/pagination/pagination.component';
-import { ContentTableComponent } from './components/tables/content-table/content-table.component';
-import { NewContentFormComponent } from './components/forms/new-content-form/new-content-form.component';
-import { NewContentModalComponent } from './components/modals/new-content-modal/new-content-modal.component';
+import { PageTableComponent } from './components/tables/page-table/page-table.component';
+import { NewPageFormComponent } from './components/forms/new-page-form/new-page-form.component';
+import { NewPageModalComponent } from './components/modals/new-page-modal/new-page-modal.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { SortableHeader } from './components/tables/sortable-header.component';
 
@@ -25,12 +25,12 @@ import { SortableHeader } from './components/tables/sortable-header.component';
     NavMenuComponent,
     HomeComponent,
     SortableHeader,
-    ContentListPage,
+    PageListPage,
     PaginationComponent,
     NotificationComponent,
-    ContentTableComponent,
-    NewContentFormComponent,
-    NewContentModalComponent
+    PageTableComponent,
+    NewPageFormComponent,
+    NewPageModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -38,8 +38,8 @@ import { SortableHeader } from './components/tables/sortable-header.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      { path: '', component: ContentListPage, pathMatch: 'full' },
-      { path: 'content', component: ContentListPage },
+      { path: '', component: PageListPage, pathMatch: 'full' },
+      { path: 'page', component: PageListPage },
     ]),
     NgbPaginationModule,
     NgbToastModule,

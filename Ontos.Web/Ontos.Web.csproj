@@ -29,11 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\app\components\forms\" />
-    <Folder Include="ClientApp\src\app\components\modals\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Ontos.Storage\Ontos.Storage.csproj" />
     <ProjectReference Include="..\Ontos.Web.Contracts\Ontos.Web.Contracts.csproj" />
   </ItemGroup>
