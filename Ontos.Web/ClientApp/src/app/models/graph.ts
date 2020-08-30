@@ -1,14 +1,14 @@
 
 
-export class Content {
+export class Page {
   constructor(
     public id: number,
-    public details: string) {
+    public content: string) {
   }
 }
 
-export class NewContent {
+export class NewPage {
   constructor(
-    public details: string) {
+    public content: string) {
   }
 }

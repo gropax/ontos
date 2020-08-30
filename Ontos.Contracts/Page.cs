@@ -4,51 +4,51 @@ using System.Text;
 
 namespace Ontos.Contracts
 {
-    public class Content
+    public class Page
     {
         public long Id { get; }
-        public string Details { get; }
+        public string Content { get; }
 
-        public Content(long id, string details)
+        public Page(long id, string content)
         {
             Id = id;
-            Details = details;
+            Content = content;
         }
 
         #region Equality methods
         public override bool Equals(object obj)
         {
-            return obj is Content content &&
+            return obj is Page content &&
                    Id == content.Id &&
-                   Details == content.Details;
+                   Content == content.Content;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Details);
+            return HashCode.Combine(Id, Content);
         }
         #endregion
     }
 
-    public class NewContent
+    public class NewPage
     {
-        public string Details { get; }
-        public object Properties => new { details = Details };
-        public NewContent(string details)
+        public string Content { get; }
+        public object Properties => new { content = Content };
+        public NewPage(string content)
         {
-            Details = details;
+            Content = content;
         }
     }
 
-    public class UpdateContent
+    public class UpdatePage
     {
         public long Id { get; }
-        public string Details { get; }
-        public object Properties => new { details = Details };
-        public UpdateContent(long id, string details)
+        public string Content { get; }
+        public object Properties => new { content = Content };
+        public UpdatePage(long id, string content)
         {
             Id = id;
-            Details = details;
+            Content = content;
         }
     }
 }

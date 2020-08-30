@@ -3,7 +3,7 @@ import { GraphService } from '../../../services/graph.service';
 import { NewContentFormComponent } from '../../forms/new-content-form/new-content-form.component';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { NotificationService } from '../../../services/notification.service';
-import { Content } from '../../../models/graph';
+import { Page } from '../../../models/graph';
 
 @Component({
   selector: 'app-new-content-modal',
@@ -12,7 +12,7 @@ import { Content } from '../../../models/graph';
 })
 export class NewContentModalComponent implements OnInit {
 
-  @Output() success = new EventEmitter<Content>();
+  @Output() success = new EventEmitter<Page>();
   @Output() close = new EventEmitter();
 
   @ViewChild(NewContentFormComponent, { static: true }) form: NewContentFormComponent;

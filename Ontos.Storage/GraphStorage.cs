@@ -10,6 +10,10 @@ namespace Ontos.Storage
 {
     public interface IGraphStorage
     {
+        Task<Page> GetPage(long id);
+        Task<Page> CreatePage(NewPage newPage);
+        Task<Page> UpdatePage(UpdatePage updatePage);
+        Task<bool> DeletePage(long id);
     }
 
     public class GraphStorage : IGraphStorage
@@ -26,24 +30,24 @@ namespace Ontos.Storage
             await Transaction(t => t.RunAsync(@"MATCH (n) DETACH DELETE n"));
         }
 
-        public async Task<Content> GetContent(long id)
+        public async Task<Page> GetPage(long id)
         {
-            return await Transaction(t => GetContent(t, id));
+            return await Transaction(t => GetPage(t, id));
         }
 
-        public async Task<Content> CreateContent(NewContent newContent)
+        public async Task<Page> CreatePage(NewPage newPage)
         {
-            return await Transaction(t => CreateContent(t, newContent));
+            return await Transaction(t => CreatePage(t, newPage));
         }
 
-        public async Task<Content> UpdateContent(UpdateContent updateContent)
+        public async Task<Page> UpdatePage(UpdatePage updatePage)
         {
-            return await Transaction(t => UpdateContent(t, updateContent));
+            return await Transaction(t => UpdatePage(t, updatePage));
         }
 
-        public async Task<bool> DeleteContent(long id)
+        public async Task<bool> DeletePage(long id)
         {
-            return await Transaction(t => DeleteContent(t, id));
+            return await Transaction(t => DeletePage(t, id));
         }
 
         public async Task<Expression> GetExpression(long id)
@@ -78,7 +82,7 @@ namespace Ontos.Storage
             return await Transaction(async t =>
             {
                 var expression = await CreateExpression(t, newReference.NewExpression);
-                return await CreateReference(t, newReference.ContentId, expression.Id);
+                return await CreateReference(t, newReference.PageId, expression.Id);
             });
         }
 
@@ -89,58 +93,58 @@ namespace Ontos.Storage
 
 
 
-        private async Task<Content> GetContent(IAsyncTransaction transaction, long id)
+        private async Task<Page> GetPage(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Content)
-                WHERE id(c)=$id
-                RETURN c",
+                MATCH (p:Page)
+                WHERE id(p)=$id
+                RETURN p",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
-            return content.FirstOrDefault();
+            var page = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
+            return page.FirstOrDefault();
         }
 
-        private async Task<Content> CreateContent(IAsyncTransaction transaction, NewContent newContent)
+        private async Task<Page> CreatePage(IAsyncTransaction transaction, NewPage newPage)
         {
             var cursor = await transaction.RunAsync(@"
-                CREATE (c:Content $content)
-                RETURN c",
-                new { content = newContent.Properties });
+                CREATE (p:Page $page)
+                RETURN p",
+                new { page = newPage.Properties });
 
-            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
-            return content.First();
+            var page = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
+            return page.First();
         }
 
-        private async Task<Content> UpdateContent(IAsyncTransaction transaction, UpdateContent updateContent)
+        private async Task<Page> UpdatePage(IAsyncTransaction transaction, UpdatePage updatePage)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Content)
-                WHERE id(c)=$id
-                SET c = $content
-                RETURN c",
+                MATCH (p:Page)
+                WHERE id(p)=$id
+                SET p = $page
+                RETURN p",
                 new
                 {
-                    id = updateContent.Id,
-                    content = updateContent.Properties,
+                    id = updatePage.Id,
+                    page = updatePage.Properties,
                 });
 
-            var content = await cursor.ToListAsync(r => Map.Content(r["c"].As<INode>()));
-            return content.First();
+            var page = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
+            return page.First();
         }
 
-        private async Task<bool> DeleteContent(IAsyncTransaction transaction, long id)
+        private async Task<bool> DeletePage(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Content)
-                WHERE id(c)=$id
-                WITH c, id(c) as id
-                DETACH DELETE c
+                MATCH (p:Page)
+                WHERE id(p)=$id
+                WITH p, id(p) as id
+                DETACH DELETE p
                 RETURN id",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => r["id"].As<long>());
-            return content.Count > 0;
+            var page = await cursor.ToListAsync(r => r["id"].As<long>());
+            return page.Count > 0;
         }
 
 
@@ -148,24 +152,24 @@ namespace Ontos.Storage
         private async Task<Expression> GetExpressionById(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Expression)
-                WHERE id(c)=$id
-                RETURN c",
+                MATCH (e:Expression)
+                WHERE id(e)=$id
+                RETURN e",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => Map.Expression(r["c"].As<INode>()));
-            return content.FirstOrDefault();
+            var expression = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
+            return expression.FirstOrDefault();
         }
 
         private async Task<Expression> GetExpression(IAsyncTransaction transaction, string language, string label)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Expression { language = $language, label = $label })
-                RETURN c",
+                MATCH (e:Expression { language = $language, label = $label })
+                RETURN e",
                 new { language, label });
 
-            var content = await cursor.ToListAsync(r => Map.Expression(r["c"].As<INode>()));
-            return content.FirstOrDefault();
+            var expression = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
+            return expression.FirstOrDefault();
         }
 
         private async Task<Expression> CreateExpression(IAsyncTransaction transaction, NewExpression newExpression)
@@ -196,8 +200,8 @@ namespace Ontos.Storage
                 RETURN e",
                 updateExpression.Properties);
 
-            var content = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
-            return content.First();
+            var expression = await cursor.ToListAsync(r => Map.Expression(r["e"].As<INode>()));
+            return expression.First();
         }
 
         private async Task<bool> DeleteExpression(IAsyncTransaction transaction, long id)
@@ -210,8 +214,8 @@ namespace Ontos.Storage
                 RETURN id",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => r["id"].As<long>());
-            return content.Count > 0;
+            var ids = await cursor.ToListAsync(r => r["id"].As<long>());
+            return ids.Count > 0;
         }
 
         
@@ -219,7 +223,7 @@ namespace Ontos.Storage
         private async Task<Reference> GetReferenceById(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (e:Expression)-[r:REFER_TO]->(:Content)
+                MATCH (e:Expression)-[r:REFER_TO]->(:Page)
                 WHERE id(r) = $id
                 RETURN r, e",
                 new { id });
@@ -230,14 +234,14 @@ namespace Ontos.Storage
             return reference.FirstOrDefault();
         }
 
-        private async Task<Reference> CreateReference(IAsyncTransaction transaction, long contentId, long expressionId)
+        private async Task<Reference> CreateReference(IAsyncTransaction transaction, long pageId, long expressionId)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (c:Content), (e:Expression)
-                WHERE id(c) = $content_id AND id(e) = $expression_id
-                MERGE (e)-[r:REFER_TO]->(c)
+                MATCH (p:Page), (e:Expression)
+                WHERE id(p) = $page_id AND id(e) = $expression_id
+                MERGE (e)-[r:REFER_TO]->(p)
                 RETURN r, e",
-                new { content_id = contentId, expression_id = expressionId });
+                new { page_id = pageId, expression_id = expressionId });
 
             var reference = await cursor.ToListAsync(r =>
                 Map.Reference(r["r"].As<IRelationship>(), r["e"].As<INode>()));
@@ -248,15 +252,15 @@ namespace Ontos.Storage
         private async Task<bool> DeleteReference(IAsyncTransaction transaction, long id)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (:Expression)-[r:REFER_TO]->(:Content)
+                MATCH (:Expression)-[r:REFER_TO]->(:Page)
                 WHERE id(r) = $id
                 WITH r, id(r) as id
                 DELETE r
                 RETURN id",
                 new { id });
 
-            var content = await cursor.ToListAsync(r => r["id"].As<long>());
-            return content.Count > 0;
+            var reference = await cursor.ToListAsync(r => r["id"].As<long>());
+            return reference.Count > 0;
         }
 
 

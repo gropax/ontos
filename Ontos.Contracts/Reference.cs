@@ -39,19 +39,19 @@ namespace Ontos.Contracts
 
     public class NewReference
     {
-        public long ContentId { get; }
+        public long PageId { get; }
         public string Language { get; }
         public string Label { get; }
         public NewExpression NewExpression => new NewExpression(Language, Label);
         public object Properties => new
         {
-            content_id = ContentId,
+            content_id = PageId,
             expression = new { language = Language, label = Label },
         };
 
         public NewReference(long contentId, string language, string label)
         {
-            ContentId = contentId;
+            PageId = contentId;
             Language = language;
             Label = label;
         }

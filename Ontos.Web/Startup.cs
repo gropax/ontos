@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Neo4j.Driver;
+using Ontos.Storage;
 
 namespace Ontos.Web
 {
@@ -26,6 +28,8 @@ namespace Ontos.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddSingleton<IGraphStorage>(new GraphStorage("bolt://localhost:7687/db/data", "neo4j", "12345"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

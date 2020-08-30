@@ -30,38 +30,37 @@ namespace Ontos.Storage.Tests
         public async void TestCRUDContent()
         {
             // CREATE
-            var newContent = new NewContent("Contenu super cool.");
-            var createdContent = await _storage.CreateContent(newContent);
-            Assert.True(createdContent.Id > 0);
-            Assert.Equal("Contenu super cool.", createdContent.Details);
+            var newContent = new NewPage("Contenu super cool.");
+            var createdContent = await _storage.CreatePage(newContent);
+            Assert.Equal("Contenu super cool.", createdContent.Content);
 
             // GET
             var id = createdContent.Id;
-            var getContent = await _storage.GetContent(id);
+            var getContent = await _storage.GetPage(id);
             Assert.Equal(createdContent, getContent);
 
             // UPDATE
-            var updateContent = new UpdateContent(id, "Contenu super cool (mis à jour).");
-            var updatedContent = await _storage.UpdateContent(updateContent);
-            Assert.Equal("Contenu super cool (mis à jour).", updatedContent.Details);
+            var updateContent = new UpdatePage(id, "Contenu super cool (mis à jour).");
+            var updatedContent = await _storage.UpdatePage(updateContent);
+            Assert.Equal("Contenu super cool (mis à jour).", updatedContent.Content);
 
             // GET
-            getContent = await _storage.GetContent(id);
+            getContent = await _storage.GetPage(id);
             Assert.Equal(updatedContent, getContent);
 
             // DELETE
-            bool deleted = await _storage.DeleteContent(id);
+            bool deleted = await _storage.DeletePage(id);
             Assert.True(deleted);
 
             // GET
-            getContent = await _storage.GetContent(id);
+            getContent = await _storage.GetPage(id);
             Assert.Null(getContent);
         }
 
         [Fact]
         public async void TestDeleteContent_NotFound()
         {
-            bool deleted = await _storage.DeleteContent(999);
+            bool deleted = await _storage.DeletePage(999);
             Assert.False(deleted);
         }
 
@@ -71,7 +70,6 @@ namespace Ontos.Storage.Tests
             // CREATE
             var newExpression = new NewExpression("fra", "Phénoménologie");
             var createdExpression = await _storage.CreateExpression(newExpression);
-            Assert.True(createdExpression.Id > 0);
             Assert.Equal("fra", createdExpression.Language);
             Assert.Equal("Phénoménologie", createdExpression.Label);
 
@@ -119,12 +117,11 @@ namespace Ontos.Storage.Tests
         [Fact]
         public async void TestCRUDReference()
         {
-            var content = await _storage.CreateContent(new NewContent("Contenu super cool."));
+            var content = await _storage.CreatePage(new NewPage("Contenu super cool."));
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
                 content.Id, "fra", "Phénoménologie"));
-            Assert.True(created.Id > 0);
             Assert.Equal("fra", created.Expression.Language);
             Assert.Equal("Phénoménologie", created.Expression.Label);
 
@@ -144,14 +141,13 @@ namespace Ontos.Storage.Tests
         [Fact]
         public async void TestCreateReference_ExpressionExists()
         {
-            var content = await _storage.CreateContent(new NewContent("Contenu super cool."));
+            var content = await _storage.CreatePage(new NewPage("Contenu super cool."));
             var expression = await _storage.CreateExpression(new NewExpression("fra", "Phénoménologie"));
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
                 content.Id, expression.Language, expression.Label));
 
-            Assert.True(created.Id > 0);
             Assert.Equal(expression, created.Expression);
         }
 

@@ -4,7 +4,7 @@ import { ConfigService } from '../../services/config.service';
 import { GraphService } from '../../services/graph.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { Content } from '../../models/graph';
+import { Page } from '../../models/graph';
 
 @Component({
   selector: 'app-content-list',
@@ -28,7 +28,7 @@ export class ContentListPage implements OnInit {
   
   openModal(content) {
     this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-new-dataset' });
-    this.modal.result.then((page: Content) => {
+    this.modal.result.then((page: Page) => {
       this.router.navigate(['/pages', page.id]);
     }, error => {
     });

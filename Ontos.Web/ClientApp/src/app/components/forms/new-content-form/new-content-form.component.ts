@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NewContent } from '../../../models/graph';
+import { NewPage } from '../../../models/graph';
 
 @Component({
   selector: 'app-new-content-form',
@@ -15,7 +15,7 @@ export class NewContentFormComponent implements OnInit {
 
   public get valid() { return this.contentForm.valid; }
   public get model() {
-    return new NewContent(
+    return new NewPage(
       this.contentForm.get('details').value
     );
   }

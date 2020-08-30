@@ -4,7 +4,7 @@ import { SortColumn, SortDirection, PaginationParams, SortEvent } from '../../..
 import { SortableHeader } from '../sortable-header.component';
 import { GraphService } from '../../../services/graph.service';
 import { ConfigService } from '../../../services/config.service';
-import { Content } from '../../../models/graph';
+import { Page } from '../../../models/graph';
 
 @Component({
   selector: 'app-content-table',
@@ -15,16 +15,16 @@ export class ContentTableComponent implements OnInit {
 
   private loading = false;
   private total$ = new BehaviorSubject<number>(0);
-  private content$ = new BehaviorSubject<Content[]>([]);
+  private content$ = new BehaviorSubject<Page[]>([]);
 
   private page: number = 1;
   private pageSize: number;
-  private sortColumn: SortColumn<Content> = 'id';
+  private sortColumn: SortColumn<Page> = 'id';
   private sortDirection: SortDirection = '';
 
   private startIndex: number = 0;
 
-  @ViewChildren(SortableHeader) headers: QueryList<SortableHeader<Content>>;
+  @ViewChildren(SortableHeader) headers: QueryList<SortableHeader<Page>>;
 
   constructor(
     private config: ConfigService,
@@ -47,7 +47,7 @@ export class ContentTableComponent implements OnInit {
       });
   }
 
-  onSort(event: SortEvent<Content>) {
+  onSort(event: SortEvent<Page>) {
     // resetting other headers
     this.headers.forEach(header => {
       if (header.sortable !== event.column)

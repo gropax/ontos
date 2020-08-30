@@ -8,11 +8,11 @@ namespace Ontos.Storage
 {
     public static class Map
     {
-        public static Content Content(INode node)
+        public static Page Page(INode node)
         {
-            return new Content(
+            return new Page(
                 node.Id,
-                node["details"].As<string>());
+                node["content"].As<string>());
         }
 
         public static Expression Expression(INode node)

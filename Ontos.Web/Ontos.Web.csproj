@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.6" />
   </ItemGroup>
 
@@ -34,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ontos.Storage\Ontos.Storage.csproj" />
+    <ProjectReference Include="..\Ontos.Web.Contracts\Ontos.Web.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

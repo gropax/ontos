@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Content = /** @class */ (function () {
-    function Content(id, details) {
+var Page = /** @class */ (function () {
+    function Page(id, content) {
         this.id = id;
-        this.details = details;
+        this.content = content;
     }
-    return Content;
+    return Page;
 }());
-exports.Content = Content;
-var NewContent = /** @class */ (function () {
-    function NewContent(details) {
-        this.details = details;
+exports.Page = Page;
+var NewPage = /** @class */ (function () {
+    function NewPage(content) {
+        this.content = content;
     }
-    return NewContent;
+    return NewPage;
 }());
-exports.NewContent = NewContent;
+exports.NewPage = NewPage;
 //# sourceMappingURL=graph.js.map
