@@ -1,8 +1,14 @@
 <form [formGroup]="pageForm" #formDir="ngForm">
 
   <div class="form-group">
-    <label for="content">Content</label>
-    <textarea id="content" class="form-control" ngbAutofocus formControlName="content" rows="10" required ></textarea>
+    <div class="input-group">
+      <input id="name" type="text" class="form-control" ngbAutofocus formControlName="name" placeholder="Page name">
+      <div class="input-group-append">
+        <app-language-selector></app-language-selector>
+      </div>
+    </div>
+    
+    <textarea id="content" class="form-control mt-2" formControlName="content" rows="10" required placeholder="Page content..."></textarea>
     <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">
       <div *ngIf="content.errors.required">
         Content is required.

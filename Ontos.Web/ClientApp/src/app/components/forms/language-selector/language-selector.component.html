@@ -1,0 +1,3 @@
+<select [(ngModel)]="selectedLanguage" class="custom-select" required>
+  <option *ngFor="let language of languages" [value]="language.code">{{ language.name }}</option>
+</select>

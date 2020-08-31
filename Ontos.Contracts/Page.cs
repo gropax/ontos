@@ -10,14 +10,20 @@ namespace Ontos.Contracts
         public string Content { get; }
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; }
+        public Reference[] References { get; }
 
-        public Page(long id, string content, DateTime createdAt, DateTime updatedAt)
+        public Page(long id, string content, DateTime createdAt, DateTime updatedAt, Reference[] references = null)
         {
             Id = id;
             Content = content;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
+            References = references ?? new Reference[0];
         }
+
+        public Page(Page page, Reference[] references)
+            : this(page.Id, page.Content, page.CreatedAt, page.UpdatedAt, references)
+        { }
 
         #region Equality methods
         public override bool Equals(object obj)
@@ -45,6 +51,7 @@ namespace Ontos.Contracts
     public class NewPage
     {
         public string Content { get; }
+        public NewExpression Expression { get; }
         public object Properties => new
         {
             content = Content,
@@ -52,9 +59,10 @@ namespace Ontos.Contracts
             updated_at = DateTime.UtcNow,
         };
 
-        public NewPage(string content)
+        public NewPage(string content, NewExpression newExpression = null)
         {
             Content = content;
+            Expression = newExpression;
         }
     }
 

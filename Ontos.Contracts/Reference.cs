@@ -10,15 +10,17 @@ namespace Ontos.Contracts
     /// </summary>
     public class Reference
     {
-        public long Id { get; set; }
-        public string[] Contexts { get; set; } = new string[0];
-        public Expression Expression { get; set; }
+        public long Id { get; }
+        public string[] Contexts { get; }
+        public long PageId { get; }
+        public Expression Expression { get; }
 
-        public Reference(long id, string[] contexts, Expression expression)
+        public Reference(long id, long pageId, Expression expression, string[] contexts = null)
         {
             Id = id;
-            Contexts = contexts;
+            PageId = pageId;
             Expression = expression;
+            Contexts = contexts ?? new string[0];
         }
 
         #region Equality methods
@@ -49,9 +51,9 @@ namespace Ontos.Contracts
             expression = new { language = Language, label = Label },
         };
 
-        public NewReference(long contentId, string language, string label)
+        public NewReference(long pageId, string language, string label)
         {
-            PageId = contentId;
+            PageId = pageId;
             Language = language;
             Label = label;
         }

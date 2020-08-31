@@ -3,10 +3,9 @@
 </div>
 
 <div *ngIf="!loading" class="page-content" ngElse="">
-  <div class="container mt-4">
-    <h1>
-      <i>No name</i>
 
+  <div class="container mt-4">
+    <app-page-title [page]="page">
       <span class="btn-group float-right mt-2" role="group" aria-label="Basic example">
         <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'edit']">
           <fa-icon [icon]="editIcon"></fa-icon>
@@ -19,8 +18,9 @@
           Delete
         </button>
       </span>
-    </h1>
+    </app-page-title>
   </div>
+
   <div class="container mt-4">
     <hr />
     <markdown katex>

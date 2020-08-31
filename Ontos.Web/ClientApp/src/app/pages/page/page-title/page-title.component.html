@@ -1,0 +1,6 @@
+<h1>
+  <i *ngIf="referenceCount == 0">Untitled</i>
+  <span *ngIf="referenceCount == 1">{{ mainLabel }}</span>
+
+  <ng-content></ng-content>
+</h1>

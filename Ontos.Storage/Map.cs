@@ -25,11 +25,11 @@ namespace Ontos.Storage
                 node["label"].As<string>());
         }
 
-        public static Reference Reference(IRelationship reference, INode expression)
+        public static Reference Reference(INode reference, long pageId, INode expression)
         {
             return new Reference(
                 reference.Id,
-                new string[0],
+                pageId,
                 Map.Expression(expression));
         }
     }

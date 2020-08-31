@@ -13,6 +13,8 @@ namespace Ontos.Web.Validation
         public NewPageValidator()
         {
             RuleFor(x => x.Content).NotEmpty();
+            RuleFor(x => x.Expression).SetValidator(new NewExpressionValidator())
+                .When(x => x.Expression != null);
         }
     }
 

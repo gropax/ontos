@@ -1,5 +1,6 @@
 using Ontos.Contracts;
 using System;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Xunit;
@@ -55,6 +56,38 @@ namespace Ontos.Storage.Tests
             // GET
             getContent = await _storage.GetPage(id);
             Assert.Null(getContent);
+        }
+
+        [Fact]
+        public async void TestCreatePage_WithExpression()
+        {
+            // CREATE
+            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "Phénoménologie"));
+            var createdPage = await _storage.CreatePage(newPage);
+            Assert.Equal("Contenu super cool.", createdPage.Content);
+            Assert.Single(createdPage.References);
+
+            var reference = createdPage.References[0];
+            Assert.Equal(createdPage.Id, reference.PageId);
+
+            var expression = reference.Expression;
+            Assert.Equal("fra", expression.Language);
+            Assert.Equal("Phénoménologie", expression.Label);
+        }
+
+        [Fact]
+        public async void TestGetPage_WithMultipleReferences()
+        {
+            // CREATE
+            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "Phénoménologie"));
+            var createdPage = await _storage.CreatePage(newPage);
+            await _storage.CreateReference(new NewReference(createdPage.Id, "fra", "Gloubi boulga"));
+
+            // GET
+            var gettedPage = await _storage.GetPage(createdPage.Id);
+            Assert.Equal(2, gettedPage.References.Length);
+            Assert.Equal(new[] { "Gloubi boulga", "Phénoménologie" },
+                gettedPage.References.Select(r => r.Expression.Label).OrderBy(l => l));
         }
 
         [Fact]

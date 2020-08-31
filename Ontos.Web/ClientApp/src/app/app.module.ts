@@ -24,6 +24,8 @@ import { PageEditPage } from './pages/page-edit/page-edit.component';
 import { EditPageFormComponent } from './components/forms/edit-page-form/edit-page-form.component';
 import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm-modal.component';
 import { HoverClassDirective } from './directives/hover-class.directive';
+import { LanguageSelectorComponent } from './components/forms/language-selector/language-selector.component';
+import { PageTitleComponent } from './pages/page/page-title/page-title.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { HoverClassDirective } from './directives/hover-class.directive';
     EditPageFormComponent,
     ConfirmModalComponent,
     HoverClassDirective,
+    LanguageSelectorComponent,
+    PageTitleComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
