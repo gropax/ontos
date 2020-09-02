@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Page } from '../../models/graph';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GraphService } from '../../services/graph.service';
-import { faPenFancy, faPenNib, faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faPenFancy, faPenNib, faEraser, faAt, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotificationService } from '../../services/notification.service';
 
@@ -24,7 +24,8 @@ export class PagePage implements OnInit {
 
   editIcon = faPenNib;
   deleteIcon = faEraser;
-
+  editDenominationsIcon = faAt;
+  nodeIcon = faShareAlt;
 
   constructor(
     private route: ActivatedRoute,

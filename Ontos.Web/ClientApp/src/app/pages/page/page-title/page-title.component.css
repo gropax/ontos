@@ -1,0 +1,8 @@
+.title-button {
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.title-button:hover {
+    opacity: 1;
+}

@@ -5,8 +5,18 @@
 <div *ngIf="!loading" class="page-content" ngElse="">
 
   <div class="container mt-4">
-    <app-page-title [page]="page">
-      <span class="btn-group float-right mt-2" role="group" aria-label="Basic example">
+    <app-page-title [page]="page" hover-class="fade-trigger">
+
+      <span class="fade-hidden btn-group ml-3 mb-1" role="group" aria-label="Basic example">
+        <button class="btn btn-outline-dark" role="button">
+          <fa-icon [icon]="nodeIcon"></fa-icon>
+        </button>
+        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'denominations']">
+          <fa-icon [icon]="editDenominationsIcon"></fa-icon>
+        </button>
+      </span>
+
+      <span class="fade-hidden btn-group float-right mt-2" role="group" aria-label="Basic example">
         <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'edit']">
           <fa-icon [icon]="editIcon"></fa-icon>
           Edit
@@ -18,6 +28,7 @@
           Delete
         </button>
       </span>
+
     </app-page-title>
   </div>
 
