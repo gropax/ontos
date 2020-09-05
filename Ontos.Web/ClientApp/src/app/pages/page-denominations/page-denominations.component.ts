@@ -24,9 +24,9 @@ export class PageDenominationsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.route.data.subscribe((data: { page: Page }) => {
+    this.route.data.subscribe((data: { page: Page, references: Reference[] }) => {
       this.page = data.page;
-      this.loadReferences();
+      this.references$.next(data.references);
     });
   }
 

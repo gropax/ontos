@@ -15,7 +15,7 @@ export class GraphService {
     return this.getPaginated(`api/pages`, params);
   }
 
-  public getPage(id: string) {
+  public getPage(id: string | number) {
     return this.http.get<Page>(`api/pages/${id}`);
   }
 
@@ -27,11 +27,11 @@ export class GraphService {
     return this.http.put<Page>(`api/pages`, params);
   }
 
-  public deletePage(id: number) {
+  public deletePage(id: string | number) {
     return this.http.delete(`api/pages/${id}`);
   }
 
-  public getReferences(id: number) {
+  public getReferences(id: string | number) {
     return this.http.get<Reference[]>(`api/pages/${id}/references`);
   }
 
@@ -39,7 +39,7 @@ export class GraphService {
     return this.http.post<Reference>(`api/references`, params);
   }
 
-  public deleteReference(id: number) {
+  public deleteReference(id: string | number) {
     return this.http.delete(`api/references/${id}`);
   }
 

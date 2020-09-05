@@ -33,6 +33,7 @@ import { ExpressionFormComponent } from './components/forms/expression-form/expr
 import { ReferenceInlineFormComponent } from './components/forms/reference-inline-form/reference-inline-form.component';
 import { DeleteReferenceButtonComponent } from './pages/page-denominations/delete-reference-button/delete-reference-button.component';
 import { PageResolver } from './resolvers/page.resolver';
+import { ReferencesResolver } from './resolvers/references.resolver';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,10 @@ import { PageResolver } from './resolvers/page.resolver';
         path: 'pages/:id/denominations',
         component: PageDenominationsPage,
         data: { animation: 'PageDenominations' },
-        resolve: { page: PageResolver },
+        resolve: {
+          page: PageResolver,
+          references: ReferencesResolver,
+        },
       },
     ]),
     NgbPaginationModule,
@@ -97,6 +101,7 @@ import { PageResolver } from './resolvers/page.resolver';
   ],
   providers: [
     PageResolver,
+    ReferencesResolver,
   ],
   bootstrap: [AppComponent]
 })
