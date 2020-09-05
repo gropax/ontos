@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -59,15 +60,16 @@ import { DeleteReferenceButtonComponent } from './pages/page-denominations/delet
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: PageListPage, pathMatch: 'full' },
-      { path: 'pages', component: PageListPage },
-      { path: 'pages/:id', component: PagePage },
-      { path: 'pages/:id/edit', component: PageEditPage },
-      { path: 'pages/:id/denominations', component: PageDenominationsPage },
+      { path: 'pages', component: PageListPage, data: { animation: 'PageList' }  },
+      { path: 'pages/:id', component: PagePage, data: { animation: 'Page' }  },
+      { path: 'pages/:id/edit', component: PageEditPage, data: { animation: 'PageEdit' }  },
+      { path: 'pages/:id/denominations', component: PageDenominationsPage, data: { animation: 'PageDenominations' }  },
     ]),
     NgbPaginationModule,
     NgbToastModule,
