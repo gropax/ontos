@@ -42,20 +42,17 @@ namespace Ontos.Contracts
     public class NewReference
     {
         public long PageId { get; }
-        public string Language { get; }
-        public string Label { get; }
-        public NewExpression NewExpression => new NewExpression(Language, Label);
+        public NewExpression NewExpression { get; }
         public object Properties => new
         {
             content_id = PageId,
-            expression = new { language = Language, label = Label },
+            expression = new { language = NewExpression.Language, label = NewExpression.Label },
         };
 
-        public NewReference(long pageId, string language, string label)
+        public NewReference(long pageId, NewExpression newExpression)
         {
             PageId = pageId;
-            Language = language;
-            Label = label;
+            NewExpression = newExpression;
         }
     }
 }

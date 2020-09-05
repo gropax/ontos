@@ -108,6 +108,38 @@ namespace Scenes.Web.Controllers
                 return NotFound($"Dataset not found for id [{id}].");
         }
 
+        /// <summary>
+        /// Get all references to the given page
+        /// </summary>
+        /// <response code="200">References to page</response>
+        [HttpGet("{id}/references")]
+        [ProducesResponseType(typeof(ReferenceDto[]), 200)]
+        public async Task<IActionResult> GetPageReferences([FromRoute] long id)
+        {
+            var references = await _storage.GetPageReferences(id);
+            var dtos = references.Select(r => new ReferenceDto(r)).ToArray();
+
+            return Ok(dtos);
+        }
+
+        /// <summary>
+        /// Create a new reference to given page
+        /// </summary>
+        /// <response code="200">Created reference</response>
+        [HttpPost("/api/references")]
+        [ProducesResponseType(typeof(ReferenceDto[]), 200)]
+        public async Task<IActionResult> CreateReference([FromBody] NewReferenceDto newReferenceDto)
+        {
+            var validation = Validator.Validate(newReferenceDto);
+            if (!validation.IsValid)
+                return BadRequest(validation.ToString());
+
+            var reference = await _storage.CreateReference(newReferenceDto.ToModel());
+            var dto = new ReferenceDto(reference);
+
+            return Ok(dto);
+        }
+
         
         private static PaginationParamsDto<PageSortKey> GetPagePagination(int page, int pageSize, string sortColumn, string sortDirection)
         {

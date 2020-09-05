@@ -81,7 +81,7 @@ namespace Ontos.Storage.Tests
             // CREATE
             var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "Phénoménologie"));
             var createdPage = await _storage.CreatePage(newPage);
-            await _storage.CreateReference(new NewReference(createdPage.Id, "fra", "Gloubi boulga"));
+            await _storage.CreateReference(new NewReference(createdPage.Id, new NewExpression("fra", "Gloubi boulga")));
 
             // GET
             var gettedPage = await _storage.GetPage(createdPage.Id);
@@ -154,7 +154,7 @@ namespace Ontos.Storage.Tests
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
-                content.Id, "fra", "Phénoménologie"));
+                content.Id, new NewExpression("fra", "Phénoménologie")));
             Assert.Equal("fra", created.Expression.Language);
             Assert.Equal("Phénoménologie", created.Expression.Label);
 
@@ -179,7 +179,7 @@ namespace Ontos.Storage.Tests
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
-                content.Id, expression.Language, expression.Label));
+                content.Id, new NewExpression(expression.Language, expression.Label)));
 
             Assert.Equal(expression, created.Expression);
         }

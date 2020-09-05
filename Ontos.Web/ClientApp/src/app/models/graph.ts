@@ -38,6 +38,13 @@ export class NewExpression {
   }
 }
 
+export class NewReference {
+  constructor(
+    public pageId: number,
+    public expression: NewExpression) {
+  }
+}
+
 export class UpdatePage {
   constructor(
     public id: number,

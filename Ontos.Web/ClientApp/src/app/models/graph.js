@@ -45,6 +45,14 @@ var NewExpression = /** @class */ (function () {
     return NewExpression;
 }());
 exports.NewExpression = NewExpression;
+var NewReference = /** @class */ (function () {
+    function NewReference(pageId, expression) {
+        this.pageId = pageId;
+        this.expression = expression;
+    }
+    return NewReference;
+}());
+exports.NewReference = NewReference;
 var UpdatePage = /** @class */ (function () {
     function UpdatePage(id, content) {
         this.id = id;

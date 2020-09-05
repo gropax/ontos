@@ -39,7 +39,7 @@ export class PageTableComponent implements OnInit {
   loadContent() {
     this.loading = true;
     this.graphService
-      .getContentList(new PaginationParams(this.page, this.pageSize, this.sortColumn, this.sortDirection))
+      .getPaginatedPages(new PaginationParams(this.page, this.pageSize, this.sortColumn, this.sortDirection))
       .subscribe(page => {
         this.loading = false;
         this.pages$.next(page.items);

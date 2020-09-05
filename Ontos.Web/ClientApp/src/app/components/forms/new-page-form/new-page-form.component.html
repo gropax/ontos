@@ -1,12 +1,7 @@
 <form [formGroup]="pageForm" #formDir="ngForm">
 
   <div class="form-group">
-    <div class="input-group">
-      <input id="name" type="text" class="form-control" ngbAutofocus formControlName="name" placeholder="Page name">
-      <div class="input-group-append">
-        <app-language-selector></app-language-selector>
-      </div>
-    </div>
+    <app-expression-form [required]="false"></app-expression-form>
     
     <textarea id="content" class="form-control mt-2" formControlName="content" rows="10" required placeholder="Page content..."></textarea>
     <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">

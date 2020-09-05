@@ -25,4 +25,16 @@ namespace Ontos.Web.Contracts
             Expression = new ExpressionDto(reference.Expression);
         }
     }
+
+    public class NewReferenceDto
+    {
+        public long PageId { get; set; }
+        public NewExpressionDto Expression { get; set; }
+
+        public NewReference ToModel()
+        {
+            return new NewReference(PageId, Expression.ToModel());
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 <h1 hover-class="hovered">
   <i *ngIf="referenceCount == 0">Untitled</i>
-  <span *ngIf="referenceCount == 1">{{ mainLabel }}</span>
+  <span *ngIf="referenceCount > 0">{{ title }}</span>
 
   <ng-content></ng-content>
 </h1>

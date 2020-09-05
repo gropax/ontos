@@ -15,6 +15,8 @@ namespace Ontos.Storage
         Task<Page> CreatePage(NewPage newPage);
         Task<Page> UpdatePage(UpdatePage updatePage);
         Task<bool> DeletePage(long id);
+        Task<Reference[]> GetPageReferences(long pageId);
+        Task<Reference> CreateReference(NewReference reference);
     }
 
     public class GraphStorage : IGraphStorage
@@ -92,7 +94,10 @@ namespace Ontos.Storage
             return await Transaction(t => DeleteExpression(t, id));
         }
 
-
+        public async Task<Reference[]> GetPageReferences(long pageId)
+        {
+            return await Transaction(t => GetPageReferences(t, pageId));
+        }
 
         public async Task<Reference> GetReference(long id)
         {
@@ -290,6 +295,20 @@ namespace Ontos.Storage
         }
 
         
+
+        private async Task<Reference[]> GetPageReferences(IAsyncTransaction transaction, long pageId)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (p:Page)<-[:SIGNIFIED]-(r:Reference)-[:SIGNIFIER]->(e:Expression)
+                WHERE id(p) = $pageId
+                RETURN id(p), r, e",
+                new { pageId });
+
+            var references = await cursor.ToListAsync(r =>
+                Map.Reference(r["r"].As<INode>(), r["id(p)"].As<long>(), r["e"].As<INode>()));
+
+            return references.ToArray();
+        }
 
         private async Task<Reference> GetReferenceById(IAsyncTransaction transaction, long id)
         {

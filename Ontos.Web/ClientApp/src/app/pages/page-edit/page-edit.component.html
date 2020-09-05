@@ -3,14 +3,19 @@
 </div>
 
 <div *ngIf="!loading" class="page-content" ngElse="">
+
   <div class="container mt-4">
-    <h1><i>No name</i></h1>
+    <app-page-title [page]="page" prefix="Editing" hover-class="fade-trigger"></app-page-title>
   </div>
+
+  <hr />
+
   <div class="container mt-4">
     <app-edit-page-form [page]="page"></app-edit-page-form>
+
     <button class="btn btn-dark float-right mt-2" role="button" [disabled]="!valid" (click)="submit()">
       <fa-icon *ngIf="!saving" [icon]="saveIcon"></fa-icon>
-      <div *ngIf="saving" class="spinner-border spinner-border-sm" role="status">
+      <div *ngIf="saving" class="spinner-border spinner-border-sm mb-1" role="status">
         <span class="sr-only">Loading...</span>
       </div>
       Save

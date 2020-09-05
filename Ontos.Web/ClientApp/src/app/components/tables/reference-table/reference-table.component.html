@@ -1,0 +1,27 @@
+<div *ngIf="(references$ | async).length > 0">
+  <table class="table table-striped" [class.blurred]="loading">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Language</th>
+        <th scope="col">Label</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reference of references$ | async; let idx = index">
+        <th scope="row">{{ idx + 1 }}</th>
+        <td>{{ reference.expression.language }}</td>
+        <td>{{ reference.expression.label }}</td>
+        <td>
+          actions...
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="jumbotron" *ngIf="(references$ | async).length == 0">
+  <h2>No denominations</h2>
+  <p class="lead">Create a new denomination to see it appear here.</p>
+</div>

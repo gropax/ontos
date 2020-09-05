@@ -8,22 +8,26 @@
     <app-page-title [page]="page" hover-class="fade-trigger">
 
       <span class="fade-hidden btn-group ml-3 mb-1" role="group" aria-label="Basic example">
-        <button class="btn btn-outline-dark" role="button">
+        <button class="btn btn-outline-dark" role="button"
+                ngbTooltip="See denominations graph" [openDelay]="1000">
           <fa-icon [icon]="nodeIcon"></fa-icon>
         </button>
-        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'denominations']">
+        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'denominations']"
+                ngbTooltip="Edit page denominations" [openDelay]="1000">
           <fa-icon [icon]="editDenominationsIcon"></fa-icon>
         </button>
       </span>
 
       <span class="fade-hidden btn-group float-right mt-2" role="group" aria-label="Basic example">
-        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'edit']">
+        <button class="btn btn-outline-dark" role="button" [routerLink]="['/pages', page.id, 'edit']"
+                ngbTooltip="Edit page content" [openDelay]="1000">
           <fa-icon [icon]="editIcon"></fa-icon>
           Edit
         </button>
         <button class="btn btn-outline-dark"
                 no-hover-class="btn-outline-dark"
-                hover-class="btn-outline-danger" role="button" (click)="openModal(modalContent)">
+                hover-class="btn-outline-danger" role="button" (click)="openModal(modalContent)"
+                ngbTooltip="Delete page" [openDelay]="1000">
           <fa-icon [icon]="deleteIcon"></fa-icon>
           Delete
         </button>
@@ -32,8 +36,9 @@
     </app-page-title>
   </div>
 
+  <hr />
+
   <div class="container mt-4">
-    <hr />
     <markdown katex>
       {{ page.content }}
     </markdown>

@@ -11,5 +11,6 @@ namespace Ontos.Web.Validation
     {
         public static ValidationResult Validate(NewPageDto newPageDto) => new NewPageValidator().Validate(newPageDto);
         public static ValidationResult Validate(UpdatePageDto updatePageDto) => new UpdatePageValidator().Validate(updatePageDto);
+        public static ValidationResult Validate(NewReferenceDto newReferenceDto) => new NewReferenceValidator().Validate(newReferenceDto);
     }
 }

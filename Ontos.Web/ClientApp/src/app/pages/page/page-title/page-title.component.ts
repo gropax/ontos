@@ -10,6 +10,7 @@ import { ConfigService } from '../../../services/config.service';
 export class PageTitleComponent implements OnInit {
 
   @Input() page: Page;
+  @Input() prefix: string;
 
   constructor(
     private configService: ConfigService) {
@@ -20,6 +21,13 @@ export class PageTitleComponent implements OnInit {
 
   private get referenceCount() {
     return this.page.references.length;
+  }
+
+  private get title() {
+    let title = this.mainLabel;
+    if (this.prefix)
+      title = `${this.prefix} « ${title} »`;
+    return title;
   }
 
   private get mainLabel() {

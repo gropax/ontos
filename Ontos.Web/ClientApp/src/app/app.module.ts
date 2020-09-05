@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { NgbPaginationModule, NgbToastModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TimeagoModule } from 'ngx-timeago';
 import { MarkdownModule } from 'ngx-markdown';
@@ -26,6 +26,10 @@ import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm
 import { HoverClassDirective } from './directives/hover-class.directive';
 import { LanguageSelectorComponent } from './components/forms/language-selector/language-selector.component';
 import { PageTitleComponent } from './pages/page/page-title/page-title.component';
+import { PageDenominationsPage } from './pages/page-denominations/page-denominations.component';
+import { ReferenceTableComponent } from './components/tables/reference-table/reference-table.component';
+import { ExpressionFormComponent } from './components/forms/expression-form/expression-form.component';
+import { ReferenceInlineFormComponent } from './components/forms/reference-inline-form/reference-inline-form.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,10 @@ import { PageTitleComponent } from './pages/page/page-title/page-title.component
     HoverClassDirective,
     LanguageSelectorComponent,
     PageTitleComponent,
+    PageDenominationsPage,
+    ReferenceTableComponent,
+    ExpressionFormComponent,
+    ReferenceInlineFormComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -57,10 +65,12 @@ import { PageTitleComponent } from './pages/page/page-title/page-title.component
       { path: 'pages', component: PageListPage },
       { path: 'pages/:id', component: PagePage },
       { path: 'pages/:id/edit', component: PageEditPage },
+      { path: 'pages/:id/denominations', component: PageDenominationsPage },
     ]),
     NgbPaginationModule,
     NgbToastModule,
     NgbModalModule,
+    NgbTooltipModule,
     FontAwesomeModule,
     TimeagoModule.forRoot(),
     MarkdownModule.forRoot(),

@@ -1,0 +1,21 @@
+<form [formGroup]="referenceForm" #formDir="ngForm">
+
+  <div class="form-row ml-2">
+    <div class="form-group col-8 mb-0">
+      <app-expression-form></app-expression-form>
+    </div>
+
+    <div class="form-group col">
+      <button class="btn btn-dark" role="button"
+              ngbTooltip="Create new reference" [openDelay]="1000"
+              (click)="createReference()" [disabled]="!valid">
+        <fa-icon *ngIf="!loading" [icon]="createIcon"></fa-icon>
+        <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        Create
+      </button>
+    </div>
+  </div>
+
+</form>

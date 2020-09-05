@@ -1,0 +1,8 @@
+<form [formGroup]="expressionForm" #formDir="ngForm">
+  <div class="input-group">
+    <input id="name" type="text" class="form-control" ngbAutofocus formControlName="name" placeholder="Name">
+    <div class="input-group-append">
+      <app-language-selector></app-language-selector>
+    </div>
+  </div>
+</form>
