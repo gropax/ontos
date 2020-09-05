@@ -140,6 +140,20 @@ namespace Scenes.Web.Controllers
             return Ok(dto);
         }
 
+        /// <summary>
+        /// Delete the given reference
+        /// </summary>
+        /// <response code="200">Success</response>
+        /// <response code="404">Reference not found</response>
+        [HttpDelete("/api/references/{id}")]
+        public async Task<IActionResult> DeleteReference([FromRoute] long id)
+        {
+            if (await _storage.DeleteReference(id))
+                return Ok();
+            else
+                return NotFound($"Reference not found for id [{id}].");
+        }
+
         
         private static PaginationParamsDto<PageSortKey> GetPagePagination(int page, int pageSize, string sortColumn, string sortDirection)
         {

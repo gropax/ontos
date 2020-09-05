@@ -18,7 +18,7 @@ export class PageEditPage implements OnInit {
 
   saveIcon = faSave;
 
-  private pageId: string;
+  private pageId: number;
   private page: Page;
   private loading: boolean = false;
   private saving: boolean = false;
@@ -31,7 +31,7 @@ export class PageEditPage implements OnInit {
   }
 
   ngOnInit() {
-    this.pageId = this.route.snapshot.paramMap.get("id");
+    this.pageId = parseInt(this.route.snapshot.paramMap.get("id"));
 
     this.loading = true;
     this.graphService.getPage(this.pageId)

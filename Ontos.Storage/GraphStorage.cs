@@ -17,6 +17,7 @@ namespace Ontos.Storage
         Task<bool> DeletePage(long id);
         Task<Reference[]> GetPageReferences(long pageId);
         Task<Reference> CreateReference(NewReference reference);
+        Task<bool> DeleteReference(long id);
     }
 
     public class GraphStorage : IGraphStorage

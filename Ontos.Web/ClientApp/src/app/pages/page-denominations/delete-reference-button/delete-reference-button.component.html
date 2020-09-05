@@ -1,0 +1,12 @@
+<button class="btn btn-outline-danger btn-sm" (click)="openModal(modalContent)"
+        ngbTooltip="Delete reference" [openDelay]="1000">
+  <fa-icon *ngIf="!deleting" [icon]="deleteRefIcon"></fa-icon>
+  <div *ngIf="deleting" class="spinner-border spinner-border-sm" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</button>
+
+<ng-template #modalContent>
+  <app-confirm-modal [message]="deleteMessage"
+                     (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
+</ng-template>

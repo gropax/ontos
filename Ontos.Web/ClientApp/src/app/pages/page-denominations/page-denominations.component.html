@@ -11,7 +11,33 @@
   <hr />
 
   <div class="container mt-4">
-    <app-reference-table [references$]="references$"></app-reference-table>
+    <div *ngIf="(references$ | async).length > 0">
+      <table class="table table-striped" [class.blurred]="loading">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Language</th>
+            <th scope="col">Label</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reference of references$ | async; let idx = index" hover-class="fade-trigger">
+            <th scope="row">{{ idx + 1 }}</th>
+            <td>{{ reference.expression.language }}</td>
+            <td>{{ reference.expression.label }}</td>
+            <td>
+              <app-delete-reference-button class="fade-hidden float-right mr-2" [reference]="reference" (deleted)="onDeleted($event)"></app-delete-reference-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="jumbotron" *ngIf="(references$ | async).length == 0">
+      <h2>No denominations</h2>
+      <p class="lead">Create a new denomination to see it appear here.</p>
+    </div>
   </div>
 
   <app-reference-inline-form [pageId]="pageId" (created)="onCreated($event)"></app-reference-inline-form>

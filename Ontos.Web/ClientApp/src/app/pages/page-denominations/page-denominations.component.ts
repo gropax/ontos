@@ -51,4 +51,8 @@ export class PageDenominationsPage implements OnInit {
     this.loadReferences();
   }
 
+  onDeleted($event: Reference) {
+    this.loadReferences();
+  }
+
 }

@@ -39,6 +39,10 @@ export class GraphService {
     return this.http.post<Reference>(`api/references`, params);
   }
 
+  public deleteReference(id: number) {
+    return this.http.delete(`api/references/${id}`);
+  }
+
   protected getPaginated<T>(url: string, pageParams: PaginationParams<T>,
     otherParams: { [param: string]: string } = {}): Observable<Paginated<T>>
   {

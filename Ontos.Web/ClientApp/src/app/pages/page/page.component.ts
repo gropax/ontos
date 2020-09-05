@@ -15,7 +15,7 @@ export class PagePage implements OnInit {
 
   private modal: NgbModalRef;
 
-  private pageId: string;
+  private pageId: number;
   private page: Page;
 
   private loading: boolean = false;
@@ -36,7 +36,7 @@ export class PagePage implements OnInit {
   }
 
   ngOnInit() {
-    this.pageId = this.route.snapshot.paramMap.get("id");
+    this.pageId = parseInt(this.route.snapshot.paramMap.get("id"));
     this.deleteMessage = `Are you sure you want to delete the page with ID ${this.pageId}`;
 
     this.loading = true;
@@ -51,7 +51,7 @@ export class PagePage implements OnInit {
   }
   
   openModal(content) {
-    this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-confirm-deletion' });
+    this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-confirm-deletion', centered: true });
     this.modal.result.then(() => {
       this.deleting = true;
       this.graphService.deletePage(this.pageId)
@@ -66,7 +66,7 @@ export class PagePage implements OnInit {
           this.deleting = false;
           this.notificationService.notifyError(error);
         });
-    });
+    }, () => { /* add this lambda to avoid console error when dismissing modal */ });
   }
 
 }

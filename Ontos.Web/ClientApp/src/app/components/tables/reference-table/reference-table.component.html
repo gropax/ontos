@@ -5,7 +5,7 @@
         <th scope="col">#</th>
         <th scope="col">Language</th>
         <th scope="col">Label</th>
-        <th scope="col">Actions</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -14,7 +14,10 @@
         <td>{{ reference.expression.language }}</td>
         <td>{{ reference.expression.label }}</td>
         <td>
-          actions...
+          <button class="btn btn-outline-danger btn-sm" (click)="delete(reference)"
+                  ngbTooltip="Delete reference" [openDelay]="1000">
+            <fa-icon [icon]="deleteRefIcon"></fa-icon>
+          </button>
         </td>
       </tr>
     </tbody>
@@ -25,3 +28,8 @@
   <h2>No denominations</h2>
   <p class="lead">Create a new denomination to see it appear here.</p>
 </div>
+
+<ng-template #modalContent>
+  <app-confirm-modal [message]="deleteMessage"
+                     (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
+</ng-template>

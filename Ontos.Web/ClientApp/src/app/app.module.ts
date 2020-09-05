@@ -30,6 +30,7 @@ import { PageDenominationsPage } from './pages/page-denominations/page-denominat
 import { ReferenceTableComponent } from './components/tables/reference-table/reference-table.component';
 import { ExpressionFormComponent } from './components/forms/expression-form/expression-form.component';
 import { ReferenceInlineFormComponent } from './components/forms/reference-inline-form/reference-inline-form.component';
+import { DeleteReferenceButtonComponent } from './pages/page-denominations/delete-reference-button/delete-reference-button.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ReferenceInlineFormComponent } from './components/forms/reference-inlin
     ReferenceTableComponent,
     ExpressionFormComponent,
     ReferenceInlineFormComponent,
+    DeleteReferenceButtonComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
