@@ -15,7 +15,7 @@ export class GraphService {
     return this.getPaginated(`api/pages`, params);
   }
 
-  public getPage(id: number) {
+  public getPage(id: string) {
     return this.http.get<Page>(`api/pages/${id}`);
   }
 

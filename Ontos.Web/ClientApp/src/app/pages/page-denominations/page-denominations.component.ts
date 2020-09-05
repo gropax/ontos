@@ -12,36 +12,27 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PageDenominationsPage implements OnInit {
 
-  private pageId: number;
   private page: Page;
-  private loading: boolean = false;
   private saving: boolean = false;
 
   private references$ = new BehaviorSubject<Reference[]>([]);
 
   constructor(
     private route: ActivatedRoute,
-    private notificationService: NotificationService,
     private graphService: GraphService,
     private router: Router) {
   }
 
   ngOnInit() {
-    this.pageId = parseInt(this.route.snapshot.paramMap.get("id"));
-
-    this.loading = true;
-    this.graphService.getPage(this.pageId)
-      .subscribe(page => {
-        this.page = page;
-        this.loading = false;
-      });
-
-    this.loadReferences();
+    this.route.data.subscribe((data: { page: Page }) => {
+      this.page = data.page;
+      this.loadReferences();
+    });
   }
 
   loadReferences() {
     this.graphService
-      .getReferences(this.pageId)
+      .getReferences(this.page.id)
       .subscribe(refs => {
         this.references$.next(refs);
       });

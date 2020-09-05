@@ -18,9 +18,7 @@ export class PageEditPage implements OnInit {
 
   saveIcon = faSave;
 
-  private pageId: number;
   private page: Page;
-  private loading: boolean = false;
   private saving: boolean = false;
 
   constructor(
@@ -31,14 +29,7 @@ export class PageEditPage implements OnInit {
   }
 
   ngOnInit() {
-    this.pageId = parseInt(this.route.snapshot.paramMap.get("id"));
-
-    this.loading = true;
-    this.graphService.getPage(this.pageId)
-      .subscribe(page => {
-        this.page = page;
-        this.loading = false;
-      });
+    this.route.data.subscribe((data: { page: Page }) => this.page = data.page)
   }
 
   submit() {

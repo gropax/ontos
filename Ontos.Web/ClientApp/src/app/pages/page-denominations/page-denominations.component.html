@@ -1,4 +1,4 @@
-<div *ngIf="!loading" class="page-content" ngElse="">
+<div class="page-content">
 
   <div class="container">
     <app-page-title [page]="page" prefix="Renaming" hover-class="fade-trigger"></app-page-title>
@@ -36,5 +36,5 @@
     </div>
   </div>
 
-  <app-reference-inline-form [pageId]="pageId" (created)="onCreated($event)"></app-reference-inline-form>
+  <app-reference-inline-form [pageId]="page.id" (created)="onCreated($event)"></app-reference-inline-form>
 </div>

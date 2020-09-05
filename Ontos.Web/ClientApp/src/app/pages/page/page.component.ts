@@ -15,17 +15,18 @@ export class PagePage implements OnInit {
 
   private modal: NgbModalRef;
 
-  private pageId: number;
   private page: Page;
 
-  private loading: boolean = false;
   private deleting: boolean = false;
-  private deleteMessage: string;
 
   editIcon = faPenNib;
   deleteIcon = faEraser;
   editDenominationsIcon = faAt;
   nodeIcon = faShareAlt;
+
+  private get deleteMessage() {
+    return `Are you sure you want to delete the page with ID ${this.page.id}`;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -36,25 +37,14 @@ export class PagePage implements OnInit {
   }
 
   ngOnInit() {
-    this.pageId = parseInt(this.route.snapshot.paramMap.get("id"));
-    this.deleteMessage = `Are you sure you want to delete the page with ID ${this.pageId}`;
-
-    this.loading = true;
-    this.graphService.getPage(this.pageId)
-      .subscribe(page => {
-        this.loading = false;
-        this.page = page;
-      }, error => {
-        this.loading = false;
-        this.notificationService.notifyError(error);
-      });
+    this.route.data.subscribe((data: { page: Page }) => this.page = data.page)
   }
   
   openModal(content) {
     this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-confirm-deletion', centered: true });
     this.modal.result.then(() => {
       this.deleting = true;
-      this.graphService.deletePage(this.pageId)
+      this.graphService.deletePage(this.page.id)
         .subscribe(() => {
           this.deleting = false;
 

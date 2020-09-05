@@ -32,6 +32,7 @@ import { ReferenceTableComponent } from './components/tables/reference-table/ref
 import { ExpressionFormComponent } from './components/forms/expression-form/expression-form.component';
 import { ReferenceInlineFormComponent } from './components/forms/reference-inline-form/reference-inline-form.component';
 import { DeleteReferenceButtonComponent } from './pages/page-denominations/delete-reference-button/delete-reference-button.component';
+import { PageResolver } from './resolvers/page.resolver';
 
 @NgModule({
   declarations: [
@@ -67,9 +68,24 @@ import { DeleteReferenceButtonComponent } from './pages/page-denominations/delet
     RouterModule.forRoot([
       { path: '', component: PageListPage, pathMatch: 'full' },
       { path: 'pages', component: PageListPage, data: { animation: 'PageList' }  },
-      { path: 'pages/:id', component: PagePage, data: { animation: 'Page' }  },
-      { path: 'pages/:id/edit', component: PageEditPage, data: { animation: 'PageEdit' }  },
-      { path: 'pages/:id/denominations', component: PageDenominationsPage, data: { animation: 'PageDenominations' }  },
+      {
+        path: 'pages/:id',
+        component: PagePage,
+        data: { animation: 'Page' },
+        resolve: { page: PageResolver },
+      },
+      {
+        path: 'pages/:id/edit',
+        component: PageEditPage,
+        data: { animation: 'PageEdit' },
+        resolve: { page: PageResolver },
+      },
+      {
+        path: 'pages/:id/denominations',
+        component: PageDenominationsPage,
+        data: { animation: 'PageDenominations' },
+        resolve: { page: PageResolver },
+      },
     ]),
     NgbPaginationModule,
     NgbToastModule,
@@ -79,7 +95,9 @@ import { DeleteReferenceButtonComponent } from './pages/page-denominations/delet
     TimeagoModule.forRoot(),
     MarkdownModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    PageResolver,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
