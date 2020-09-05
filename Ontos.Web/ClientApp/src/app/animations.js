@@ -7,7 +7,7 @@ exports.fadeAnimation = animations_1.trigger('fadeAnimation', [
         animations_1.query(':enter, :leave', [
             animations_1.style({
                 position: 'absolute',
-                top: -16,
+                //top: -16,  // without this, page moves downward during animation.
                 width: '100%',
                 height: '100%',
             }),

@@ -7,7 +7,7 @@ export const fadeAnimation =
       query(':enter, :leave', [
         style({
           position: 'absolute',
-          top: -16,  // without this, page moves downward during animation.
+          //top: -16,  // without this, page moves downward during animation.
           width: '100%',
           height: '100%',
         }),

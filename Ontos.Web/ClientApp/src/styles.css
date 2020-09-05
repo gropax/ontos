@@ -58,3 +58,6 @@ p {  /* not working :( */
     visibility: visible;
     opacity: 1;
 }
+
+
+html    {overflow-y:scroll;}

@@ -1,15 +1,19 @@
-<h1>
-  Content
-  <button class="btn btn-outline-dark float-right mt-2" role="button" (click)="openModal(modalContent)">
-    <fa-icon [icon]="faPlus"></fa-icon>
-    Create
-  </button>
-</h1>
+<div class="page-content">
+  <h1>
+    Content
+    <button class="btn btn-outline-dark float-right mt-2" role="button" (click)="openModal(modalContent)">
+      <fa-icon [icon]="faPlus"></fa-icon>
+      Create
+    </button>
+  </h1>
 
-<div class="container mt-4">
-  <app-page-table></app-page-table>
+  <hr />
+
+  <div class="container mt-4">
+    <app-page-table></app-page-table>
+  </div>
+
+  <ng-template #modalContent>
+    <app-new-page-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-page-modal>
+  </ng-template>
 </div>
-
-<ng-template #modalContent>
-  <app-new-page-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-page-modal>
-</ng-template>
