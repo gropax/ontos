@@ -24,6 +24,8 @@ export class PagePage implements OnInit {
   editDenominationsIcon = faAt;
   nodeIcon = faShareAlt;
 
+  isCollapsed = true;
+
   private get deleteMessage() {
     return `Are you sure you want to delete the page with ID ${this.page.id}`;
   }

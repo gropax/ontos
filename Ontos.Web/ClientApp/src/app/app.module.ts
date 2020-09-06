@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TimeagoModule } from 'ngx-timeago';
 import { MarkdownModule } from 'ngx-markdown';
@@ -34,6 +34,8 @@ import { ReferenceInlineFormComponent } from './components/forms/reference-inlin
 import { DeleteReferenceButtonComponent } from './pages/page-denominations/delete-reference-button/delete-reference-button.component';
 import { PageResolver } from './resolvers/page.resolver';
 import { ReferencesResolver } from './resolvers/references.resolver';
+import { PageRelationsComponent } from './pages/page/page-relations/page-relations.component';
+import { PageRelationComponent } from './pages/page/page-relations/page-relation/page-relation.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { ReferencesResolver } from './resolvers/references.resolver';
     ExpressionFormComponent,
     ReferenceInlineFormComponent,
     DeleteReferenceButtonComponent,
+    PageRelationsComponent,
+    PageRelationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -95,6 +99,7 @@ import { ReferencesResolver } from './resolvers/references.resolver';
     NgbToastModule,
     NgbModalModule,
     NgbTooltipModule,
+    NgbCollapseModule,
     FontAwesomeModule,
     TimeagoModule.forRoot(),
     MarkdownModule.forRoot(),

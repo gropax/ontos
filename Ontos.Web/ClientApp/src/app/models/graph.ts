@@ -24,6 +24,23 @@ export class Expression {
   }
 }
 
+export class Relation {
+  constructor(
+    public id: string,
+    public type: string,
+    public originId: string,
+    public targetId: string) {
+  }
+}
+
+export class RelationType {
+  constructor(
+    public label: string,
+    public directed: boolean,
+    public acyclic: boolean) {
+  }
+}
+
 export class NewPage {
   constructor(
     public content: string,
@@ -42,6 +59,14 @@ export class NewReference {
   constructor(
     public pageId: number,
     public expression: NewExpression) {
+  }
+}
+
+export class NewRelation {
+  constructor(
+    public type: string,
+    public originId: string,
+    public targetId: string) {
   }
 }
 

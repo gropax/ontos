@@ -26,6 +26,10 @@
                 ngbTooltip="Delete page" [openDelay]="1000">
           <fa-icon [icon]="deleteIcon"></fa-icon>
           Delete
+          <ng-template #modalContent>
+            <app-confirm-modal [message]="deleteMessage"
+                               (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
+          </ng-template>
         </button>
       </span>
 
@@ -40,8 +44,9 @@
     </markdown>
   </div>
 
-  <ng-template #modalContent>
-    <app-confirm-modal [message]="deleteMessage"
-                       (confirm)="modal.close()" (close)="modal.dismiss()"></app-confirm-modal>
-  </ng-template>
+  <hr />
+
+  <div class="container mt-4">
+    <app-page-relations [pageId]="page.id"></app-page-relations>
+  </div>
 </div>

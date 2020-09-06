@@ -156,6 +156,53 @@ namespace Scenes.Web.Controllers
                 return NotFound($"Reference not found for id [{id}].");
         }
 
+        /// <summary>
+        /// Get all relations on the given page
+        /// </summary>
+        /// <response code="200">Relations on page</response>
+        [HttpGet("{id}/relations")]
+        [ProducesResponseType(typeof(RelatedPageDto[]), 200)]
+        public async Task<IActionResult> GetPageRelations([FromRoute] long id)
+        {
+            var relations = await _storage.GetAllRelatedPages(id);
+            var dtos = relations.Select(r => new RelatedPageDto(r)).ToArray();
+
+            return Ok(dtos);
+        }
+
+        /// <summary>
+        /// Create a new relation on given page
+        /// </summary>
+        /// <response code="200">Created relation</response>
+        [HttpPost("/api/relations")]
+        [ProducesResponseType(typeof(RelationDto[]), 200)]
+        public async Task<IActionResult> CreateRelation([FromBody] NewRelationDto newRelationDto)
+        {
+            var validation = Validator.Validate(newRelationDto);
+            if (!validation.IsValid)
+                return BadRequest(validation.ToString());
+
+            var reference = await _storage.CreateRelation(newRelationDto.ToModel());
+            var dto = new RelationDto(reference);
+
+            return Ok(dto);
+        }
+
+        /// <summary>
+        /// Delete the given relation
+        /// </summary>
+        /// <response code="200">Success</response>
+        /// <response code="404">Relation not found</response>
+        [HttpDelete("/api/relations/{id}")]
+        public async Task<IActionResult> DeleteRelation([FromRoute] long id)
+        {
+            var deleted = await _storage.DeleteRelations(id);
+            if (deleted.Length == 1)
+                return Ok();
+            else
+                return NotFound($"Relation not found for id [{id}].");
+        }
+
         
         private static PaginationParamsDto<PageSortKey> GetPagePagination(int page, int pageSize, string sortColumn, string sortDirection)
         {

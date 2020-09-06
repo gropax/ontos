@@ -1,0 +1,3 @@
+<div class="accordion" *ngFor="let relation of relations$ | async; let idx = index">
+  <app-page-relation [relation]="relation"></app-page-relation>
+</div>

@@ -49,6 +49,38 @@ namespace Ontos.Contracts
         #endregion
     }
 
+    public class RelatedPage
+    {
+        public long Id { get; set; }
+        public RelationType Type { get; set; }
+        public long OriginId { get; set; }
+        public Page Target { get; set; }
+
+        public RelatedPage(long id, RelationType type, long originId, Page target)
+        {
+            Id = id;
+            Type = type;
+            OriginId = originId;
+            Target = target;
+        }
+
+        #region Equality methods
+        public override bool Equals(object obj)
+        {
+            return obj is RelatedPage relation &&
+                   Id == relation.Id &&
+                   EqualityComparer<RelationType>.Default.Equals(Type, relation.Type) &&
+                   OriginId == relation.OriginId &&
+                   EqualityComparer<Page>.Default.Equals(Target, relation.Target);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Type, OriginId, Target);
+        }
+        #endregion
+    }
+
     public class NewRelation
     {
         public RelationType Type { get; set; }
@@ -85,6 +117,8 @@ namespace Ontos.Contracts
         {
             Inclusion, Intersection,
         };
+
+        public static readonly string[] Labels = All.Select(r => r.Label).ToArray();
 
         private static readonly Dictionary<string, RelationType> _typesByLabel = All.ToDictionary(t => t.Label);
 

@@ -18,6 +18,9 @@ namespace Ontos.Storage
         Task<Reference[]> GetPageReferences(long pageId);
         Task<Reference> CreateReference(NewReference reference);
         Task<long[]> DeleteReferences(params long[] ids);
+        Task<RelatedPage[]> GetAllRelatedPages(long pageId);
+        Task<Relation> CreateRelation(NewRelation relation);
+        Task<long[]> DeleteRelations(params long[] ids);
     }
 
     public class GraphStorage : IGraphStorage
@@ -150,14 +153,19 @@ namespace Ontos.Storage
             });
         }
 
+        public async Task<RelatedPage[]> GetAllRelatedPages(long pageId)
+        {
+            return await Transaction(t => GetAllRelatedPages(t, pageId));
+        }
+
         public async Task<Relation[]> GetRelationsFrom(long originId, RelationType type)
         {
             return await Transaction(t => GetRelationsFrom(t, originId, type.Label, type.Directed));
         }
 
-        public async Task<bool> DeleteRelation(long id)
+        public async Task<long[]> DeleteRelations(params long[] ids)
         {
-            return await Transaction(t => DeleteRelation(t, id));
+            return await Transaction(t => DeleteRelations(t, ids));
         }
 
 
@@ -483,6 +491,40 @@ namespace Ontos.Storage
             return paths.ToArray();
         }
 
+        private async Task<RelatedPage[]> GetAllRelatedPages(IAsyncTransaction transaction, long pageId)
+        {
+            var relationQuery = string.Join("|", RelationType.Labels);
+            var cursor = await transaction.RunAsync($@"
+                MATCH (p:Page)-[r:{relationQuery}]-(q:Page)
+                WHERE id(p) = $page_id
+                OPTIONAL MATCH (q)<-[:SIGNIFIED]-(ref:Reference)-[:SIGNIFIER]->(e:Expression)
+                RETURN r, q, ref, e",
+                new { page_id = pageId });
+
+            var results = await cursor.ToListAsync(r => new
+            {
+                Relationship = r["r"].As<IRelationship>(),
+                OtherPage = r["q"].As<INode>(),
+                Reference = r["ref"].As<INode>(),
+                Expression = r["e"].As<INode>(),
+            });
+
+            var relations = results
+                .GroupBy(r => r.Relationship)
+                .Select(g =>
+                {
+                    var page = Map.Page(g.First().OtherPage);
+                    var references = g.Select(o => Map.Reference(o.Reference, page.Id, o.Expression)).ToArray();
+                    return new RelatedPage(
+                        g.Key.Id,
+                        RelationType.Parse(g.Key.Type),
+                        pageId,
+                        new Page(page, references));
+                }).ToArray();
+
+            return relations.ToArray();
+        }
+
         private async Task<Relation[]> GetRelationsFrom(IAsyncTransaction transaction, long originId, string relationType = null, bool directed = true)
         {
             string relationQuery = string.IsNullOrWhiteSpace(relationType) ? string.Empty : ":" + relationType;
@@ -513,18 +555,20 @@ namespace Ontos.Storage
             return relation.First();
         }
 
-        private async Task<bool> DeleteRelation(IAsyncTransaction transaction, long id)
+        private async Task<long[]> DeleteRelations(IAsyncTransaction transaction, params long[] ids)
         {
             var cursor = await transaction.RunAsync(@"
-                MATCH (:Page)-[r]->(:Page)
-                WHERE id(r) = $id
+                WITH $ids AS ids
+                MATCH (:Page)-[r]-(:Page)
+                WHERE id(r) IN ids
                 WITH r, id(r) as id
                 DELETE r
                 RETURN id",
-                new { id });
+                new { ids = ids.ToArray() });
 
-            var relations = await cursor.ToListAsync(r => r["id"].As<long>());
-            return relations.Count > 0;
+            var res = await cursor.ToListAsync(r => r["id"].As<long>());
+
+            return res.ToArray();
         }
 
 

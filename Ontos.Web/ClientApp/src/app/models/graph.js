@@ -28,6 +28,25 @@ var Expression = /** @class */ (function () {
     return Expression;
 }());
 exports.Expression = Expression;
+var Relation = /** @class */ (function () {
+    function Relation(id, type, originId, targetId) {
+        this.id = id;
+        this.type = type;
+        this.originId = originId;
+        this.targetId = targetId;
+    }
+    return Relation;
+}());
+exports.Relation = Relation;
+var RelationType = /** @class */ (function () {
+    function RelationType(label, directed, acyclic) {
+        this.label = label;
+        this.directed = directed;
+        this.acyclic = acyclic;
+    }
+    return RelationType;
+}());
+exports.RelationType = RelationType;
 var NewPage = /** @class */ (function () {
     function NewPage(content, expression) {
         if (expression === void 0) { expression = null; }
@@ -53,6 +72,15 @@ var NewReference = /** @class */ (function () {
     return NewReference;
 }());
 exports.NewReference = NewReference;
+var NewRelation = /** @class */ (function () {
+    function NewRelation(type, originId, targetId) {
+        this.type = type;
+        this.originId = originId;
+        this.targetId = targetId;
+    }
+    return NewRelation;
+}());
+exports.NewRelation = NewRelation;
 var UpdatePage = /** @class */ (function () {
     function UpdatePage(id, content) {
         this.id = id;
