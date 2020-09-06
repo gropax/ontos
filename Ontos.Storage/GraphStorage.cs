@@ -24,6 +24,8 @@ namespace Ontos.Storage
     {
         private IDriver _driver;
 
+        private const int MAX_PATH_LENGTH = 50;
+
         public GraphStorage(string uri, string user, string password)
         {
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
@@ -118,6 +120,41 @@ namespace Ontos.Storage
         {
             return await Transaction(t => DeleteReference(t, id));
         }
+
+        public async Task<Relation> CreateRelation(NewRelation newRelation)
+        {
+            bool isValid = await ValidateRelation(newRelation);
+            if (isValid)
+                return await Transaction(t => EnsureRelation(t, newRelation));
+            else
+                return null;
+        }
+
+        public async Task<bool> ValidateRelation(NewRelation newRelation)
+        {
+            return await Transaction(async t =>
+            {
+                // If acyclic, ensure no paths from target to origin
+                if (newRelation.Type.Acyclic)
+                {
+                    var paths = await GetRelationPaths(t, newRelation.TargetId, newRelation.OriginId, newRelation.Type.Label, newRelation.Type.Directed);
+                    if (paths.Length > 0)
+                        return false;
+                }
+                return true;
+            });
+        }
+
+        public async Task<Relation[]> GetRelationsFrom(long originId, RelationType type)
+        {
+            return await Transaction(t => GetRelationsFrom(t, originId, type.Label, type.Directed));
+        }
+
+        public async Task<bool> DeleteRelation(long id)
+        {
+            return await Transaction(t => DeleteRelation(t, id));
+        }
+
 
 
         private async Task<long> CountPages(IAsyncTransaction transaction)
@@ -354,6 +391,65 @@ namespace Ontos.Storage
             return reference.Count > 0;
         }
 
+        private async Task<PagePath[]> GetRelationPaths(IAsyncTransaction transaction, long originId, long targetId, string relationType = null, bool directed = true)
+        {
+            string relationQuery = string.IsNullOrWhiteSpace(relationType) ? string.Empty : ":" + relationType;
+            string direction = directed ? ">" : string.Empty;
+
+            var cursor = await transaction.RunAsync($@"
+                MATCH p=(o:Page)-[r$rel_query*1..{MAX_PATH_LENGTH}]-{direction}(t:Page)
+                WHERE id(o) = $origin_id AND id(t) = $target_id
+                RETURN p",
+                new { origin_id = originId, target_id = targetId, rel_query = relationQuery }); 
+
+            var paths = await cursor.ToListAsync(r => Map.PagePath(r["p"].As<IPath>()));
+
+            return paths.ToArray();
+        }
+
+        private async Task<Relation[]> GetRelationsFrom(IAsyncTransaction transaction, long originId, string relationType = null, bool directed = true)
+        {
+            string relationQuery = string.IsNullOrWhiteSpace(relationType) ? string.Empty : ":" + relationType;
+            string direction = directed ? ">" : string.Empty;
+
+            var cursor = await transaction.RunAsync($@"
+                MATCH (o:Page)-[r{relationQuery}]-{direction}(t:Page)
+                WHERE id(o) = $origin_id
+                RETURN r",
+                new { origin_id = originId, rel_query = relationQuery }); 
+
+            var relations = await cursor.ToListAsync(r => Map.Relation(r["r"].As<IRelationship>()));
+
+            return relations.ToArray();
+        }
+
+        private async Task<Relation> EnsureRelation(IAsyncTransaction transaction, NewRelation newRelation)
+        {
+            var cursor = await transaction.RunAsync($@"
+                MATCH (o:Page), (t:Page)
+                WHERE id(o) = $origin_id AND id(t) = $target_id
+                MERGE (o)-[r:{newRelation.Type.Label}]-(t)
+                RETURN r",
+                newRelation.Properties);
+
+            var relation = await cursor.ToListAsync(r => Map.Relation(r["r"].As<IRelationship>()));
+
+            return relation.First();
+        }
+
+        private async Task<bool> DeleteRelation(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (:Page)-[r]->(:Page)
+                WHERE id(r) = $id
+                WITH r, id(r) as id
+                DELETE r
+                RETURN id",
+                new { id });
+
+            var relations = await cursor.ToListAsync(r => r["id"].As<long>());
+            return relations.Count > 0;
+        }
 
 
         private async Task Transaction(Func<IAsyncTransaction, Task> func)

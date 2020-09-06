@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Resolve, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { GraphService } from "../services/graph.service";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";

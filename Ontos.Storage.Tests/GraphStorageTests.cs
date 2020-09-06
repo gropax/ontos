@@ -1,4 +1,4 @@
-using Ontos.Contracts;
+ï»¿using Ontos.Contracts;
 using System;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -41,9 +41,9 @@ namespace Ontos.Storage.Tests
             Assert.Equal(createdContent, getContent);
 
             // UPDATE
-            var updateContent = new UpdatePage(id, "Contenu super cool (mis à jour).");
+            var updateContent = new UpdatePage(id, "Contenu super cool (mis Ã  jour).");
             var updatedContent = await _storage.UpdatePage(updateContent);
-            Assert.Equal("Contenu super cool (mis à jour).", updatedContent.Content);
+            Assert.Equal("Contenu super cool (mis Ã  jour).", updatedContent.Content);
 
             // GET
             getContent = await _storage.GetPage(id);
@@ -62,7 +62,7 @@ namespace Ontos.Storage.Tests
         public async void TestCreatePage_WithExpression()
         {
             // CREATE
-            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "Phénoménologie"));
+            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "PhÃ©nomÃ©nologie"));
             var createdPage = await _storage.CreatePage(newPage);
             Assert.Equal("Contenu super cool.", createdPage.Content);
             Assert.Single(createdPage.References);
@@ -72,21 +72,21 @@ namespace Ontos.Storage.Tests
 
             var expression = reference.Expression;
             Assert.Equal("fra", expression.Language);
-            Assert.Equal("Phénoménologie", expression.Label);
+            Assert.Equal("PhÃ©nomÃ©nologie", expression.Label);
         }
 
         [Fact]
         public async void TestGetPage_WithMultipleReferences()
         {
             // CREATE
-            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "Phénoménologie"));
+            var newPage = new NewPage("Contenu super cool.", new NewExpression("fra", "PhÃ©nomÃ©nologie"));
             var createdPage = await _storage.CreatePage(newPage);
             await _storage.CreateReference(new NewReference(createdPage.Id, new NewExpression("fra", "Gloubi boulga")));
 
             // GET
             var gettedPage = await _storage.GetPage(createdPage.Id);
             Assert.Equal(2, gettedPage.References.Length);
-            Assert.Equal(new[] { "Gloubi boulga", "Phénoménologie" },
+            Assert.Equal(new[] { "Gloubi boulga", "PhÃ©nomÃ©nologie" },
                 gettedPage.References.Select(r => r.Expression.Label).OrderBy(l => l));
         }
 
@@ -101,10 +101,10 @@ namespace Ontos.Storage.Tests
         public async void TestCRUDExpression()
         {
             // CREATE
-            var newExpression = new NewExpression("fra", "Phénoménologie");
+            var newExpression = new NewExpression("fra", "PhÃ©nomÃ©nologie");
             var createdExpression = await _storage.CreateExpression(newExpression);
             Assert.Equal("fra", createdExpression.Language);
-            Assert.Equal("Phénoménologie", createdExpression.Label);
+            Assert.Equal("PhÃ©nomÃ©nologie", createdExpression.Label);
 
             // GET
             var id = createdExpression.Id;
@@ -115,7 +115,7 @@ namespace Ontos.Storage.Tests
             var updateExpression = new UpdateExpression(id, language: "eng");
             var updatedExpression = await _storage.UpdateExpression(updateExpression);
             Assert.Equal("eng", updatedExpression.Language);
-            Assert.Equal("Phénoménologie", updatedExpression.Label);
+            Assert.Equal("PhÃ©nomÃ©nologie", updatedExpression.Label);
 
             // GET
             getExpression = await _storage.GetExpression(id);
@@ -154,9 +154,9 @@ namespace Ontos.Storage.Tests
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
-                content.Id, new NewExpression("fra", "Phénoménologie")));
+                content.Id, new NewExpression("fra", "PhÃ©nomÃ©nologie")));
             Assert.Equal("fra", created.Expression.Language);
-            Assert.Equal("Phénoménologie", created.Expression.Label);
+            Assert.Equal("PhÃ©nomÃ©nologie", created.Expression.Label);
 
             // GET
             var getted = await _storage.GetReference(created.Id);
@@ -175,7 +175,7 @@ namespace Ontos.Storage.Tests
         public async void TestCreateReference_ExpressionExists()
         {
             var content = await _storage.CreatePage(new NewPage("Contenu super cool."));
-            var expression = await _storage.CreateExpression(new NewExpression("fra", "Phénoménologie"));
+            var expression = await _storage.CreateExpression(new NewExpression("fra", "PhÃ©nomÃ©nologie"));
 
             // CREATE
             var created = await _storage.CreateReference(new NewReference(
@@ -189,6 +189,79 @@ namespace Ontos.Storage.Tests
         {
             bool deleted = await _storage.DeleteReference(999);
             Assert.False(deleted);
+        }
+
+        [Fact]
+        public async void TestValidateRelation_DirectedAcyclic()
+        {
+            // CREATEâ€¯Page
+            var p1 = await _storage.CreatePage(new NewPage("1"));
+            var p2 = await _storage.CreatePage(new NewPage("2"));
+            var p3 = await _storage.CreatePage(new NewPage("3"));
+            var p4 = await _storage.CreatePage(new NewPage("4"));
+
+            // CREATE Relations
+            //
+            var type = RelationType.Inclusion;
+            Assert.True(type.Directed);
+            Assert.True(type.Acyclic);
+            //
+            var r1 = await _storage.CreateRelation(new NewRelation(type, p1.Id, p2.Id));
+            var r2 = await _storage.CreateRelation(new NewRelation(type, p1.Id, p3.Id));
+            var r3 = await _storage.CreateRelation(new NewRelation(type, p3.Id, p4.Id));
+
+            Assert.NotNull(r1);
+            Assert.NotNull(r2);
+            Assert.NotNull(r3);
+
+            // VALIDATE
+            bool v1 = await _storage.ValidateRelation(new NewRelation(type, p1.Id, p4.Id));
+            bool v2 = await _storage.ValidateRelation(new NewRelation(type, p4.Id, p1.Id));
+            bool v3 = await _storage.ValidateRelation(new NewRelation(type, p3.Id, p2.Id));
+            bool v4 = await _storage.ValidateRelation(new NewRelation(type, p2.Id, p4.Id));
+            bool v5 = await _storage.ValidateRelation(new NewRelation(type, p4.Id, p3.Id));
+
+            Assert.True(v1);
+            Assert.False(v2);
+            Assert.True(v3);
+            Assert.True(v4);
+            Assert.False(v5);
+
+            // ENSURE invalid Relations are not created
+            var r4 = await _storage.CreateRelation(new NewRelation(type, p4.Id, p1.Id));
+            var r5 = await _storage.CreateRelation(new NewRelation(type, p4.Id, p3.Id));
+
+            Assert.Null(r4);
+            Assert.Null(r5);
+        }
+
+        [Fact]
+        public async void TestCRDRelations()
+        {
+            // CREATEâ€¯Page
+            var p1 = await _storage.CreatePage(new NewPage("1"));
+            var p2 = await _storage.CreatePage(new NewPage("2"));
+
+            // CREATE Relations
+            var type = RelationType.Inclusion;
+            var r1 = await _storage.CreateRelation(new NewRelation(type, p1.Id, p2.Id));
+            var r2 = await _storage.CreateRelation(new NewRelation(type, p1.Id, p2.Id));  // Duplicate
+
+            Assert.NotNull(r1);
+            Assert.Equal(r1, r2);  // Can't create duplicate relations
+
+            // GET Relations
+            var rx = await _storage.GetRelationsFrom(p1.Id, type);
+            Assert.Single(rx);
+            Assert.Equal(r1, rx[0]);
+
+            // DELETE Relations
+            var success = await _storage.DeleteRelation(r1.Id);
+            Assert.True(success);
+
+            // GET Relations
+            rx = await _storage.GetRelationsFrom(p1.Id, type);
+            Assert.Empty(rx);
         }
     }
 }

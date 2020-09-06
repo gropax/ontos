@@ -2,6 +2,7 @@
 using Ontos.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ontos.Storage
@@ -31,6 +32,22 @@ namespace Ontos.Storage
                 reference.Id,
                 pageId,
                 Map.Expression(expression));
+        }
+
+        public static Relation Relation(IRelationship relationship)
+        {
+            return new Relation(
+                relationship.Id,
+                RelationType.Parse(relationship.Type),
+                relationship.StartNodeId,
+                relationship.EndNodeId);
+        }
+
+        public static PagePath PagePath(IPath path)
+        {
+            return new PagePath(
+                path.Nodes.Select(n => Page(n)).ToArray(),
+                path.Relationships.Select(r => Relation(r)).ToArray());
         }
     }
 }
