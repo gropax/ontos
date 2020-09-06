@@ -102,7 +102,8 @@ namespace Scenes.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] long id)
         {
-            if (await _storage.DeletePage(id))
+            var deleted = await _storage.DeletePages(id);
+            if (deleted.Length == 1)
                 return Ok();
             else
                 return NotFound($"Dataset not found for id [{id}].");
@@ -148,7 +149,8 @@ namespace Scenes.Web.Controllers
         [HttpDelete("/api/references/{id}")]
         public async Task<IActionResult> DeleteReference([FromRoute] long id)
         {
-            if (await _storage.DeleteReference(id))
+            var deleted = await _storage.DeleteReferences(id);
+            if (deleted.Length == 1)
                 return Ok();
             else
                 return NotFound($"Reference not found for id [{id}].");

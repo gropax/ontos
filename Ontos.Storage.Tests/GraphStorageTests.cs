@@ -28,34 +28,34 @@ namespace Ontos.Storage.Tests
         }
 
         [Fact]
-        public async void TestCRUDContent()
+        public async void TestCRUDPage()
         {
             // CREATE
-            var newContent = new NewPage("Contenu super cool.");
-            var createdContent = await _storage.CreatePage(newContent);
-            Assert.Equal("Contenu super cool.", createdContent.Content);
+            var newPage = new NewPage("Contenu super cool.");
+            var createdPage = await _storage.CreatePage(newPage);
+            Assert.Equal("Contenu super cool.", createdPage.Content);
 
             // GET
-            var id = createdContent.Id;
-            var getContent = await _storage.GetPage(id);
-            Assert.Equal(createdContent, getContent);
+            var id = createdPage.Id;
+            var getPage = await _storage.GetPage(id);
+            Assert.Equal(createdPage, getPage);
 
             // UPDATE
-            var updateContent = new UpdatePage(id, "Contenu super cool (mis à jour).");
-            var updatedContent = await _storage.UpdatePage(updateContent);
-            Assert.Equal("Contenu super cool (mis à jour).", updatedContent.Content);
+            var updatePage = new UpdatePage(id, "Contenu super cool (mis à jour).");
+            var updatedPage = await _storage.UpdatePage(updatePage);
+            Assert.Equal("Contenu super cool (mis à jour).", updatedPage.Content);
 
             // GET
-            getContent = await _storage.GetPage(id);
-            Assert.Equal(updatedContent, getContent);
+            getPage = await _storage.GetPage(id);
+            Assert.Equal(updatedPage, getPage);
 
             // DELETE
-            bool deleted = await _storage.DeletePage(id);
-            Assert.True(deleted);
+            var deleted = await _storage.DeletePages(id);
+            Assert.Single(deleted);
 
             // GET
-            getContent = await _storage.GetPage(id);
-            Assert.Null(getContent);
+            getPage = await _storage.GetPage(id);
+            Assert.Null(getPage);
         }
 
         [Fact]
@@ -91,10 +91,52 @@ namespace Ontos.Storage.Tests
         }
 
         [Fact]
-        public async void TestDeleteContent_NotFound()
+        public async void TestDeletePage_NotFound()
         {
-            bool deleted = await _storage.DeletePage(999);
-            Assert.False(deleted);
+            var deleted = await _storage.DeletePages(999);
+            Assert.Empty(deleted);
+        }
+
+        [Fact]
+        public async void TestDeletePage_WithReferences()
+        {
+            // CREATE
+            var p1 = await _storage.CreatePage(new NewPage("1"));
+            var p2 = await _storage.CreatePage(new NewPage("2"));
+            var e1 = new NewExpression("fra", "Phénoménologie");
+            var e2 = new NewExpression("fra", "Philosophie");
+            var r1 = await _storage.CreateReference(new NewReference(p1.Id, e1));
+            var r2 = await _storage.CreateReference(new NewReference(p2.Id, e1));
+            var r3 = await _storage.CreateReference(new NewReference(p1.Id, e2));
+
+            // GET
+            var getP1 = await _storage.GetPage(p1.Id);
+            var getP2 = await _storage.GetPage(p2.Id);
+            Assert.NotNull(getP1);
+            Assert.NotNull(getP2);
+            //
+            Assert.True(await _storage.ReferenceExists(r1.Id));
+            Assert.True(await _storage.ReferenceExists(r2.Id));
+            Assert.True(await _storage.ReferenceExists(r3.Id));
+
+            // DELETE
+            var deleted = await _storage.DeletePages(p1.Id);
+            Assert.Single(deleted);
+
+            // GET
+            getP1 = await _storage.GetPage(p1.Id);
+            getP2 = await _storage.GetPage(p2.Id);
+            Assert.Null(getP1);
+            Assert.NotNull(getP2);
+            //
+            Assert.False(await _storage.ReferenceExists(r1.Id));
+            Assert.True(await _storage.ReferenceExists(r2.Id));
+            Assert.False(await _storage.ReferenceExists(r3.Id));
+            //
+            var getE1 = await _storage.GetExpression(r1.Expression.Id);
+            var getE2 = await _storage.GetExpression(r3.Expression.Id);
+            Assert.NotNull(getE1);
+            Assert.Null(getE2);
         }
 
         [Fact]
@@ -163,8 +205,8 @@ namespace Ontos.Storage.Tests
             Assert.Equal(created, getted);
 
             // DELETE
-            bool deleted = await _storage.DeleteReference(created.Id);
-            Assert.True(deleted);
+            var deleted = await _storage.DeleteReferences(created.Id);
+            Assert.Single(deleted);
 
             // GET
             getted = await _storage.GetReference(created.Id);
@@ -187,8 +229,8 @@ namespace Ontos.Storage.Tests
         [Fact]
         public async void TestDeleteReference_NotFound()
         {
-            bool deleted = await _storage.DeleteReference(999);
-            Assert.False(deleted);
+            var deleted = await _storage.DeleteReferences(999);
+            Assert.Empty(deleted);
         }
 
         [Fact]

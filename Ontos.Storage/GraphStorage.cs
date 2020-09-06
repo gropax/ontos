@@ -14,10 +14,10 @@ namespace Ontos.Storage
         Task<Page> GetPage(long id);
         Task<Page> CreatePage(NewPage newPage);
         Task<Page> UpdatePage(UpdatePage updatePage);
-        Task<bool> DeletePage(long id);
+        Task<long[]> DeletePages(params long[] ids);
         Task<Reference[]> GetPageReferences(long pageId);
         Task<Reference> CreateReference(NewReference reference);
-        Task<bool> DeleteReference(long id);
+        Task<long[]> DeleteReferences(params long[] ids);
     }
 
     public class GraphStorage : IGraphStorage
@@ -72,9 +72,9 @@ namespace Ontos.Storage
             return await Transaction(t => UpdatePage(t, updatePage));
         }
 
-        public async Task<bool> DeletePage(long id)
+        public async Task<long[]> DeletePages(params long[] ids)
         {
-            return await Transaction(t => DeletePage(t, id));
+            return await Transaction(t => DeletePages(t, ids));
         }
 
         public async Task<Expression> GetExpression(long id)
@@ -107,6 +107,11 @@ namespace Ontos.Storage
             return await Transaction(t => GetReferenceById(t, id));
         }
 
+        public async Task<bool> ReferenceExists(long id)
+        {
+            return await Transaction(t => ReferenceExists(t, id));
+        }
+
         public async Task<Reference> CreateReference(NewReference newReference)
         {
             return await Transaction(async t =>
@@ -116,9 +121,9 @@ namespace Ontos.Storage
             });
         }
 
-        public async Task<bool> DeleteReference(long id)
+        public async Task<long[]> DeleteReferences(params long[] ids)
         {
-            return await Transaction(t => DeleteReference(t, id));
+            return await Transaction(t => DeleteReferences(t, ids));
         }
 
         public async Task<Relation> CreateRelation(NewRelation newRelation)
@@ -261,6 +266,27 @@ namespace Ontos.Storage
             return page.Count > 0;
         }
 
+        private async Task<long[]> DeletePages(IAsyncTransaction transaction, IEnumerable<long> ids)
+        {
+            var cursor = await transaction.RunAsync(@"
+                WITH $ids AS ids
+                MATCH (p:Page)
+                WHERE id(p) IN ids
+                OPTIONAL MATCH (p)<-[:SIGNIFIED]-(r:Reference)
+                WITH p, id(p) as id, r
+                DETACH DELETE p
+                RETURN id, r",
+                new { ids = ids.ToArray() });
+
+            var res = await cursor.ToListAsync(r => new { PageId = r["id"].As<long>(), ReferenceId = r["r"].As<INode>()?.Id });
+            if (res.Count == 0)
+                return new long[0];
+            else
+            {
+                await DeleteReferences(transaction, res.SelectValues(r => r.ReferenceId));
+                return res.GroupBy(r => r.PageId).Select(g => g.Key).ToArray();
+            }
+        }
 
 
         private async Task<Expression> GetExpressionById(IAsyncTransaction transaction, long id)
@@ -332,6 +358,22 @@ namespace Ontos.Storage
             return ids.Count > 0;
         }
 
+        private async Task<long[]> DeleteOrphanExpressions(IAsyncTransaction transaction, IEnumerable<long> ids)
+        {
+            var cursor = await transaction.RunAsync(@"
+                WITH $ids AS ids
+                MATCH (e:Expression)
+                WHERE id(e) IN ids AND NOT (e)<-[:SIGNIFIER]-(:Reference)
+                WITH e, id(e) as id
+                DETACH DELETE e
+                RETURN id",
+                new { ids = ids.ToArray() });
+
+            var res = await cursor.ToListAsync(r => r["id"].As<long>());
+
+            return res.ToArray();
+        }
+
         
 
         private async Task<Reference[]> GetPageReferences(IAsyncTransaction transaction, long pageId)
@@ -362,6 +404,19 @@ namespace Ontos.Storage
             return reference.FirstOrDefault();
         }
 
+        private async Task<bool> ReferenceExists(IAsyncTransaction transaction, long id)
+        {
+            var cursor = await transaction.RunAsync(@"
+                MATCH (r:Reference)
+                WHERE id(r) = $id
+                RETURN id(r)",
+                new { id });
+
+            var reference = await cursor.ToListAsync(r => r["id(r)"].As<long>());
+
+            return reference.Count > 0;
+        }
+
         private async Task<Reference> CreateReference(IAsyncTransaction transaction, long pageId, long expressionId)
         {
             var cursor = await transaction.RunAsync(@"
@@ -389,6 +444,27 @@ namespace Ontos.Storage
 
             var reference = await cursor.ToListAsync(r => r["id"].As<long>());
             return reference.Count > 0;
+        }
+
+        private async Task<long[]> DeleteReferences(IAsyncTransaction transaction, IEnumerable<long> ids)
+        {
+            var cursor = await transaction.RunAsync(@"
+                WITH $ids AS ids
+                MATCH (r:Reference)-[:SIGNIFIER]->(e:Expression)
+                WHERE id(r) IN ids
+                WITH r, id(r) as id, e
+                DETACH DELETE r
+                RETURN id, e",
+                new { ids = ids.ToArray() });
+
+            var res = await cursor.ToListAsync(r => new { ReferenceId = r["id"].As<long>(), ExpressionId = r["e"].As<INode>()?.Id });
+            if (res.Count == 0)
+                return new long[0];
+            else
+            {
+                await DeleteOrphanExpressions(transaction, res.SelectValues(r => r.ExpressionId));
+                return res.GroupBy(r => r.ReferenceId).Select(g => g.Key).ToArray();
+            }
         }
 
         private async Task<PagePath[]> GetRelationPaths(IAsyncTransaction transaction, long originId, long targetId, string relationType = null, bool directed = true)
