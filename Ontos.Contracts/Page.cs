@@ -82,4 +82,18 @@ namespace Ontos.Contracts
             Content = content;
         }
     }
+
+    public class PageSearchResult
+    {
+        public long PageId { get; }
+        public double Score { get; }
+        public string[] Expressions { get; }
+
+        public PageSearchResult(long pageId, double score, string[] expressions)
+        {
+            PageId = pageId;
+            Score = score;
+            Expressions = expressions;
+        }
+    }
 }

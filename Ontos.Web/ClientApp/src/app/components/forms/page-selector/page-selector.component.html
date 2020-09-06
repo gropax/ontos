@@ -1,0 +1,15 @@
+<div class="input-group">
+  <input type="text" class="form-control"
+         [(ngModel)]="page"
+         [ngbTypeahead]="search"
+         [resultTemplate]="rt"
+         [inputFormatter]="formatter" 
+         />
+  <div class="input-group-append">
+    <app-language-selector></app-language-selector>
+  </div>
+</div>
+
+<ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+</ng-template>

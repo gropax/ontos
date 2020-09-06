@@ -17,7 +17,7 @@ export class PageRelationsComponent implements OnInit {
   constructor(private graphService: GraphService) { }
 
   ngOnInit() {
-    this.graphService.getRelations(this.pageId)
+    this.graphService.getRelatedPages(this.pageId)
       .subscribe(relations => {
         this.relations$.next(relations);
       });

@@ -33,6 +33,15 @@ export class Relation {
   }
 }
 
+export class RelatedPage {
+  constructor(
+    public id: string,
+    public type: string,
+    public originId: string,
+    public target: Page) {
+  }
+}
+
 export class RelationType {
   constructor(
     public label: string,
@@ -45,6 +54,13 @@ export class NewPage {
   constructor(
     public content: string,
     public expression: NewExpression = null) {
+  }
+}
+
+export class PageSearch {
+  constructor(
+    public language: string,
+    public text: string) {
   }
 }
 

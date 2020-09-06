@@ -38,6 +38,16 @@ var Relation = /** @class */ (function () {
     return Relation;
 }());
 exports.Relation = Relation;
+var RelatedPage = /** @class */ (function () {
+    function RelatedPage(id, type, originId, target) {
+        this.id = id;
+        this.type = type;
+        this.originId = originId;
+        this.target = target;
+    }
+    return RelatedPage;
+}());
+exports.RelatedPage = RelatedPage;
 var RelationType = /** @class */ (function () {
     function RelationType(label, directed, acyclic) {
         this.label = label;
@@ -56,6 +66,14 @@ var NewPage = /** @class */ (function () {
     return NewPage;
 }());
 exports.NewPage = NewPage;
+var PageSearch = /** @class */ (function () {
+    function PageSearch(language, text) {
+        this.language = language;
+        this.text = text;
+    }
+    return PageSearch;
+}());
+exports.PageSearch = PageSearch;
 var NewExpression = /** @class */ (function () {
     function NewExpression(language, label) {
         this.language = language;

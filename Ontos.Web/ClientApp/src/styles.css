@@ -61,3 +61,15 @@ p {  /* not working :( */
 
 
 html    {overflow-y:scroll;}
+
+/*
+ * Get rid of left shifting on modal open
+*/
+.modal {
+ overflow-y: auto;
+}
+
+.modal-open {
+ overflow: auto;
+ padding-right: 0px !important;
+}

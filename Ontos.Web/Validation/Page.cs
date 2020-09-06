@@ -25,4 +25,13 @@ namespace Ontos.Web.Validation
             RuleFor(x => x.Content).NotEmpty();
         }
     }
+
+    public class SearchPageValidator : AbstractValidator<SearchPageDto>
+    {
+        public SearchPageValidator()
+        {
+            RuleFor(x => x.Language).NotEmpty();
+            RuleFor(x => x.Text).MinimumLength(2);
+        }
+    }
 }

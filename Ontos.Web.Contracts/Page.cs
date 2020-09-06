@@ -49,4 +49,10 @@ namespace Ontos.Web.Contracts
             return new UpdatePage(Id, Content);
         }
     }
+
+    public class SearchPageDto
+    {
+        public string Language { get; set; }
+        public string Text { get; set; }
+    }
 }

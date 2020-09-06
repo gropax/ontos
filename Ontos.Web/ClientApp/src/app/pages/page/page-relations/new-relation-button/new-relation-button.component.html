@@ -1,0 +1,8 @@
+<button class="btn btn-outline-dark float-right mt-2" role="button" (click)="openModal(modalContent)">
+  <fa-icon [icon]="buttonIcon"></fa-icon>
+  New relation
+</button>
+
+<ng-template #modalContent>
+  <app-new-relation-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-relation-modal>
+</ng-template>

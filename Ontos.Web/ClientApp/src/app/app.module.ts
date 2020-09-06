@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TimeagoModule } from 'ngx-timeago';
 import { MarkdownModule } from 'ngx-markdown';
@@ -36,6 +36,10 @@ import { PageResolver } from './resolvers/page.resolver';
 import { ReferencesResolver } from './resolvers/references.resolver';
 import { PageRelationsComponent } from './pages/page/page-relations/page-relations.component';
 import { PageRelationComponent } from './pages/page/page-relations/page-relation/page-relation.component';
+import { NewRelationButtonComponent } from './pages/page/page-relations/new-relation-button/new-relation-button.component';
+import { NewRelationModalComponent } from './components/modals/new-relation-modal/new-relation-modal.component';
+import { NewRelationFormComponent } from './components/forms/new-relation-form/new-relation-form.component';
+import { PageSelectorComponent } from './components/forms/page-selector/page-selector.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +67,10 @@ import { PageRelationComponent } from './pages/page/page-relations/page-relation
     DeleteReferenceButtonComponent,
     PageRelationsComponent,
     PageRelationComponent,
+    NewRelationButtonComponent,
+    NewRelationModalComponent,
+    NewRelationFormComponent,
+    PageSelectorComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -100,6 +108,7 @@ import { PageRelationComponent } from './pages/page/page-relations/page-relation
     NgbModalModule,
     NgbTooltipModule,
     NgbCollapseModule,
+    NgbTypeaheadModule,
     FontAwesomeModule,
     TimeagoModule.forRoot(),
     MarkdownModule.forRoot(),

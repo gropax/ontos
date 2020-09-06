@@ -40,6 +40,24 @@ namespace Scenes.Web.Controllers
         }
 
         /// <summary>
+        /// Search pages by their names
+        /// </summary>
+        /// <response code="200">Pages</response>
+        [HttpPost("search")]
+        [ProducesResponseType(typeof(PageDto[]), 200)]
+        public async Task<IActionResult> SearchPages([FromBody] SearchPageDto searchPageDto)
+        {
+            var validation = Validator.Validate(searchPageDto);
+            if (!validation.IsValid)
+                return BadRequest(validation.ToString());
+
+            var pages = await _storage.SearchPages(searchPageDto.Language, searchPageDto.Text);
+            var dtos = pages;//.Map(s => new PageDto(s));
+
+            return Ok(pages);
+        }
+
+        /// <summary>
         /// Get an existing page
         /// </summary>
         /// <response code="200">The page</response>

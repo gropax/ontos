@@ -11,6 +11,7 @@ namespace Ontos.Storage
     public interface IGraphStorage
     {
         Task<Paginated<Page>> GetPages(PaginationParams<PageSortKey> @params);
+        Task<PageSearchResult[]> SearchPages(string language, string text);
         Task<Page> GetPage(long id);
         Task<Page> CreatePage(NewPage newPage);
         Task<Page> UpdatePage(UpdatePage updatePage);
@@ -34,6 +35,19 @@ namespace Ontos.Storage
             _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
         }
 
+        public async Task CreateIndexes()
+        {
+            await Transaction(t =>
+                t.RunAsync("CALL db.index.fulltext.createNodeIndex(\"expressionLabel\", [\"Expression\"], [\"label\"])"));
+        }
+
+        public async Task DropIndexes()
+        {
+            await Transaction(t =>
+                t.RunAsync("CALL db.index.fulltext.drop(\"expressionLabel\")"));
+        }
+
+
         public async Task DeleteAll()
         {
             await Transaction(t => t.RunAsync(@"MATCH (n) DETACH DELETE n"));
@@ -47,6 +61,11 @@ namespace Ontos.Storage
                 var pages = await GetPages(t, @params);
                 return Paginated<Page>.FromParams(@params, total, pages);
             });
+        }
+
+        public async Task<PageSearchResult[]> SearchPages(string language, string text)
+        {
+            return await Transaction(t => SearchPages(t, language, text));
         }
 
         public async Task<Page> GetPage(long id)
@@ -194,6 +213,39 @@ namespace Ontos.Storage
 
             var pages = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
             return pages.ToArray();
+        }
+
+        private async Task<PageSearchResult[]> SearchPages(IAsyncTransaction transaction, string language, string text)
+        {
+            var cursor = await transaction.RunAsync($@"
+                CALL db.index.fulltext.queryNodes(""expressionLabel"", $text) YIELD node, score
+                WITH score, node AS e
+                WHERE e.language = $language
+                MATCH (p:Page)<-[:SIGNIFIED]-(r:Reference)-[:SIGNIFIER]->(e)
+                RETURN p, e, score
+                ORDER BY score DESC
+                LIMIT 10",
+                new { language, text });
+
+            var objs = await cursor.ToListAsync(r => new
+            {
+                Page = r["p"].As<INode>(),
+                Expression = Map.Expression(r["e"].As<INode>()),
+                Score = r["score"].As<double>(),
+            });
+
+            var results = objs.GroupBy(o => o.Page)
+                .Select(g =>
+                {
+                    var expressions = g.Select(r => r.Expression.Label).ToArray();
+                    double score = g.Select(r => r.Score).Max(s => s);
+                    return new PageSearchResult(
+                        pageId: g.Key.Id,
+                        score: score,
+                        expressions: expressions);
+                }).ToArray();
+
+            return results;
         }
 
         private string GetSortKey(PageSortKey sortKey)
@@ -559,7 +611,7 @@ namespace Ontos.Storage
         {
             var cursor = await transaction.RunAsync(@"
                 WITH $ids AS ids
-                MATCH (:Page)-[r]-(:Page)
+                MATCH (:Page)-[r]->(:Page)
                 WHERE id(r) IN ids
                 WITH r, id(r) as id
                 DELETE r

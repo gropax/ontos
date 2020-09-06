@@ -16,9 +16,11 @@ namespace Ontos.Storage.Tests
             _storage = new GraphStorage("bolt://localhost:7687/db/data", "neo4j", "1234");
         }
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            return _storage.DeleteAll();
+            await _storage.DeleteAll();
+            await _storage.DropIndexes();
+            await _storage.CreateIndexes();
         }
 
         public Task DisposeAsync()
@@ -138,6 +140,34 @@ namespace Ontos.Storage.Tests
             Assert.NotNull(getE1);
             Assert.Null(getE2);
         }
+
+        [Fact]
+        public async void TestSearchPages()
+        {
+            // CREATE
+            var p1 = await _storage.CreatePage(new NewPage("1"));
+            var p2 = await _storage.CreatePage(new NewPage("2"));
+            var p3 = await _storage.CreatePage(new NewPage("3"));
+
+            var e1 = new NewExpression("fr", "Un test");
+            var e2 = new NewExpression("fr", "Encore un teston");
+            var e3 = new NewExpression("fr", "les tests c’est bien");
+            var e4 = new NewExpression("en", "I like tests");
+            var e5 = new NewExpression("fr", "Rien à voir bitch");
+
+            var r1 = await _storage.CreateReference(new NewReference(p1.Id, e1));
+            var r2 = await _storage.CreateReference(new NewReference(p1.Id, e2));
+            var r3 = await _storage.CreateReference(new NewReference(p1.Id, e3));
+            var r4 = await _storage.CreateReference(new NewReference(p2.Id, e3));
+            var r5 = await _storage.CreateReference(new NewReference(p2.Id, e4));
+            var r6 = await _storage.CreateReference(new NewReference(p3.Id, e5));
+
+            var results = await _storage.SearchPages("fr", "test~1");
+            Assert.Equal(2, results.Length);
+            Assert.Equal(p1.Id, results[0].PageId);
+            Assert.Equal(p2.Id, results[1].PageId);
+        }
+
 
         [Fact]
         public async void TestCRUDExpression()
@@ -298,8 +328,8 @@ namespace Ontos.Storage.Tests
             Assert.Equal(r1, rx[0]);
 
             // DELETE Relations
-            var success = await _storage.DeleteRelation(r1.Id);
-            Assert.True(success);
+            var deleted = await _storage.DeleteRelations(r1.Id);
+            Assert.Single(deleted);
 
             // GET Relations
             rx = await _storage.GetRelationsFrom(p1.Id, type);
