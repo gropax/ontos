@@ -6,12 +6,23 @@
 </div>
 
 <div class="modal-body">
-  <app-new-relation-form></app-new-relation-form>
+  <app-new-relation-form [pageId]="pageId" (pageSelected)="newPage = false"></app-new-relation-form>
+  <div *ngIf="newPage">
+    <app-page-content-form></app-page-content-form>
+  </div>
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-dark" [disabled]="!valid" (click)="submit()">
+  <button *ngIf="form.pageSelector.isPageSelected && !newPage" type="button" class="btn btn-dark" [disabled]="!valid" (click)="createRelation()">
     <fa-icon [icon]="faPlus"></fa-icon>
-    Create
+    Create relation
+  </button>
+  <button *ngIf="!form.pageSelector.isPageSelected && !newPage" type="button" class="btn btn-dark" [disabled]="!valid" (click)="newPage = true">
+    <fa-icon [icon]="faPlus"></fa-icon>
+    New page
+  </button>
+  <button *ngIf="!form.pageSelector.isPageSelected && newPage" type="button" class="btn btn-dark" [disabled]="!valid" (click)="createRelatedPage()">
+    <fa-icon [icon]="faPlus"></fa-icon>
+    Create page
   </button>
 </div>

@@ -1,15 +1,13 @@
 <form [formGroup]="relationForm" #formDir="ngForm">
     
   <div class="form-group">
-    <select class="custom-select" formControlName="type" required>
-      <option value="include">Include</option>
-      <option value="include-reverse">Included in</option>
-      <option value="intersect">Intersect</option>
+    <select class="custom-select" formControlName="type" ngbAutofocus required>
+      <option *ngFor="let relationType of relationTypes" [ngValue]="relationType">{{ relationType.label }}</option>
     </select>
   </div>
 
   <div class="form-group">
-    <app-page-selector></app-page-selector>
+    <app-page-selector (pageSelected)="pageSelected.emit($event)"></app-page-selector>
   </div>
 
 </form>

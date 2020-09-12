@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PaginationParams, Paginated } from '../models/pagination';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Page, NewPage, UpdatePage, Reference, NewReference, Relation, NewRelation, RelatedPage, PageSearch, PageSearchResult } from '../models/graph';
+import { Page, NewPage, UpdatePage, Reference, NewReference, Relation, NewRelation, RelatedPage, PageSearch, PageSearchResult, NewRelatedPage } from '../models/graph';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,11 @@ export class GraphService {
   }
 
   public createRelation(params: NewRelation) {
-    return this.http.post<Relation>(`api/relations`, params);
+    return this.http.post<Relation>(`api/relations`, params.toParams());
+  }
+
+  public createRelatedPage(id: string | number, params: NewRelatedPage) {
+    return this.http.post<RelatedPage>(`api/pages/${id}/relations`, params.toParams());
   }
 
   public deleteRelation(id: string | number) {

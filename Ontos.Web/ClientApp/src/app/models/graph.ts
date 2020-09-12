@@ -48,6 +48,25 @@ export class RelationType {
     public directed: boolean,
     public acyclic: boolean) {
   }
+
+  public static INCLUSION = new RelationType('INCLUDE', true, true);
+  public static INTERSECTION = new RelationType('INTERSECT', false, false);
+}
+
+export class DirectedRelationType {
+  constructor(
+    public label: string,
+    public type: RelationType,
+    public reversed: boolean) {
+  }
+
+  public static INCLUDES = new DirectedRelationType("Includes", RelationType.INCLUSION, false);
+  public static INCLUDED_IN = new DirectedRelationType("Is included in", RelationType.INCLUSION, true);
+  public static INTERSECTS = new DirectedRelationType("Intersects", RelationType.INTERSECTION, false);
+
+  static all() {
+    return [this.INCLUDES, this.INCLUDED_IN, this.INTERSECTS];
+  }
 }
 
 export class NewPage {
@@ -88,9 +107,40 @@ export class NewReference {
 
 export class NewRelation {
   constructor(
-    public type: string,
+    public type: RelationType,
     public originId: string,
     public targetId: string) {
+  }
+
+  public static create(type: DirectedRelationType, originId: string, targetId: string) {
+    if (type.reversed)
+      [originId, targetId] = [targetId, originId];
+
+    return new NewRelation(type.type, originId, targetId);
+  }
+
+  public toParams() {
+    return {
+      type: this.type.label, originId: this.originId, targetId: this.targetId,
+    };
+  }
+}
+
+
+export class NewRelatedPage {
+  constructor(
+    public type: DirectedRelationType,
+    public expression: NewExpression,
+    public content: string) {
+  }
+
+  public toParams() {
+    return {
+      type: this.type.type.label,
+      reversed: this.type.reversed,
+      expression: this.expression,
+      content: this.content,
+    };
   }
 }
 

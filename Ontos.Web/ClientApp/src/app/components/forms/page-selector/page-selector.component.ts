@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Page, PageSearch, PageSearchResult } from '../../../models/graph';
 import { Observable, of } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
@@ -14,11 +14,14 @@ export class PageSelectorComponent implements OnInit {
 
   private searching = false;
   private searchFailed = false;
-  private page: Page;
+  public selected: any;
 
   @ViewChild(LanguageSelectorComponent, { static: true }) languageSelector: LanguageSelectorComponent;
 
   get language() { return this.languageSelector.selectedLanguage; }
+  get isPageSelected() { return this.selected && typeof this.selected != 'string'; }
+
+  @Output() pageSelected = new EventEmitter<string>();
 
   constructor(private graphService: GraphService) { }
 
@@ -41,6 +44,20 @@ export class PageSelectorComponent implements OnInit {
       tap(() => this.searching = false)
     )
 
-  formatter = (page: Page) => page.references[0].expression.label;
+  formatter = (input: any) => {
+    if (typeof input == 'string')
+      return input;
+    else {
+      this.pageSelected.emit(input.pageGuid);
+      return input.expressions.join(", ");
+    }
+  };
+
+  private unselectPage() {
+    if (this.isPageSelected) {
+      this.selected = this.selected.expressions.join(", ");
+      this.pageSelected.emit(null);
+    }
+  }
 
 }

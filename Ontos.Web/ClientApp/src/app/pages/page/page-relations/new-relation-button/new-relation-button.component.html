@@ -4,5 +4,5 @@
 </button>
 
 <ng-template #modalContent>
-  <app-new-relation-modal (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-relation-modal>
+  <app-new-relation-modal [pageId]="pageId" (success)="modal.close($event)" (close)="modal.dismiss()"></app-new-relation-modal>
 </ng-template>

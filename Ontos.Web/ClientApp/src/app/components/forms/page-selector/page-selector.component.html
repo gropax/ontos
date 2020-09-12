@@ -1,13 +1,13 @@
 <div class="input-group">
-  <input type="text" class="form-control"
-         [(ngModel)]="page"
+  <div class="input-group-append">
+    <app-language-selector (change)="unselectPage()"></app-language-selector>
+  </div>
+  <input type="text" class="form-control" [ngClass]="{'is-valid': isPageSelected}"
+         [(ngModel)]="selected"
          [ngbTypeahead]="search"
          [resultTemplate]="rt"
          [inputFormatter]="formatter" 
          />
-  <div class="input-group-append">
-    <app-language-selector></app-language-selector>
-  </div>
 </div>
 
 <ng-template #rt let-r="result" let-t="term">

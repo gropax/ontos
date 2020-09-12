@@ -65,4 +65,33 @@ namespace Ontos.Web.Contracts
         }
     }
 
+    public class NewRelatedPageDto
+    {
+        public string Type { get; set; }
+        public bool Reversed { get; set; }
+        public NewExpressionDto Expression { get; set; }
+        public string Content { get; set; }
+
+        public NewPage GetNewPage()
+        {
+            return new NewPage(Content, Expression.ToModel());
+        }
+
+        public NewRelation GetNewRelation(long originId, long targetId)
+        {
+            long realOriginId, realTargetId;
+            if (Reversed)
+            {
+                realOriginId = targetId;
+                realTargetId = originId;
+            }
+            else
+            {
+                realOriginId = originId;
+                realTargetId = targetId;
+            }
+
+            return new NewRelation(RelationType.Parse(Type), realOriginId, realTargetId);
+        }
+    }
 }

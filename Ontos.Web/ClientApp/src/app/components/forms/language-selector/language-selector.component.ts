@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ConfigService, Language } from '../../../services/config.service';
 
 @Component({
@@ -10,6 +10,8 @@ export class LanguageSelectorComponent implements OnInit {
 
   private languages: Language[];
   public selectedLanguage: string;
+
+  @Output() change = new EventEmitter<string>();
 
   constructor(
     private configService: ConfigService) {

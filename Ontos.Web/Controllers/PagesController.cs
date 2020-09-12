@@ -185,26 +185,50 @@ namespace Scenes.Web.Controllers
         [ProducesResponseType(typeof(RelatedPageDto[]), 200)]
         public async Task<IActionResult> GetPageRelations([FromRoute] long id)
         {
-            var relations = await _storage.GetAllRelatedPages(id);
-            var dtos = relations.Select(r => new RelatedPageDto(r)).ToArray();
+            //var relations = await _storage.GetAllRelatedPages(id);
+            //var dtos = relations.Select(r => new RelatedPageDto(r)).ToArray();
 
-            return Ok(dtos);
+            //return Ok(dtos);
+            return Ok(new object[0]);
         }
 
         /// <summary>
-        /// Create a new relation on given page
+        /// Create a related page
+        /// </summary>
+        /// <response code="200">Created related page</response>
+        [HttpPost("{id}/relations")]
+        [ProducesResponseType(typeof(RelationDto), 200)]
+        public async Task<IActionResult> CreateRelatedPage([FromRoute] long id, [FromBody] NewRelatedPageDto newRelatedPageDto)
+        {
+            //var validation = Validator.Validate(newRelatedPageDto);
+            //if (!validation.IsValid)
+            //    return BadRequest(validation.ToString());
+
+            var targetPage = await _storage.CreatePage(newRelatedPageDto.GetNewPage());
+            var relation = await _storage.CreateRelation(newRelatedPageDto.GetNewRelation(id, targetPage.Id));
+
+            var dto = new RelationDto(relation);
+
+            return Ok(dto);
+        }
+
+        /// <summary>
+        /// Create a new relation between two pages
         /// </summary>
         /// <response code="200">Created relation</response>
         [HttpPost("/api/relations")]
-        [ProducesResponseType(typeof(RelationDto[]), 200)]
+        [ProducesResponseType(typeof(RelationDto), 200)]
         public async Task<IActionResult> CreateRelation([FromBody] NewRelationDto newRelationDto)
         {
             var validation = Validator.Validate(newRelationDto);
             if (!validation.IsValid)
                 return BadRequest(validation.ToString());
 
-            var reference = await _storage.CreateRelation(newRelationDto.ToModel());
-            var dto = new RelationDto(reference);
+            var relation = await _storage.CreateRelation(newRelationDto.ToModel());
+            if (relation == null)
+                return BadRequest("Invalid relation");
+
+            var dto = new RelationDto(relation);
 
             return Ok(dto);
         }

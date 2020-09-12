@@ -40,6 +40,7 @@ import { NewRelationButtonComponent } from './pages/page/page-relations/new-rela
 import { NewRelationModalComponent } from './components/modals/new-relation-modal/new-relation-modal.component';
 import { NewRelationFormComponent } from './components/forms/new-relation-form/new-relation-form.component';
 import { PageSelectorComponent } from './components/forms/page-selector/page-selector.component';
+import { PageContentFormComponent } from './components/forms/page-content-form/page-content-form.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { PageSelectorComponent } from './components/forms/page-selector/page-sel
     NewRelationModalComponent,
     NewRelationFormComponent,
     PageSelectorComponent,
+    PageContentFormComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -54,9 +54,26 @@ var RelationType = /** @class */ (function () {
         this.directed = directed;
         this.acyclic = acyclic;
     }
+    RelationType.INCLUSION = new RelationType('INCLUDE', true, true);
+    RelationType.INTERSECTION = new RelationType('INTERSECT', false, false);
     return RelationType;
 }());
 exports.RelationType = RelationType;
+var DirectedRelationType = /** @class */ (function () {
+    function DirectedRelationType(label, type, reversed) {
+        this.label = label;
+        this.type = type;
+        this.reversed = reversed;
+    }
+    DirectedRelationType.all = function () {
+        return [this.INCLUDES, this.INCLUDED_IN, this.INTERSECTS];
+    };
+    DirectedRelationType.INCLUDES = new DirectedRelationType("Includes", RelationType.INCLUSION, false);
+    DirectedRelationType.INCLUDED_IN = new DirectedRelationType("Is included in", RelationType.INCLUSION, true);
+    DirectedRelationType.INTERSECTS = new DirectedRelationType("Intersects", RelationType.INTERSECTION, false);
+    return DirectedRelationType;
+}());
+exports.DirectedRelationType = DirectedRelationType;
 var NewPage = /** @class */ (function () {
     function NewPage(content, expression) {
         if (expression === void 0) { expression = null; }
@@ -105,9 +122,37 @@ var NewRelation = /** @class */ (function () {
         this.originId = originId;
         this.targetId = targetId;
     }
+    NewRelation.create = function (type, originId, targetId) {
+        var _a;
+        if (type.reversed)
+            _a = [targetId, originId], originId = _a[0], targetId = _a[1];
+        return new NewRelation(type.type, originId, targetId);
+    };
+    NewRelation.prototype.toParams = function () {
+        return {
+            type: this.type.label, originId: this.originId, targetId: this.targetId,
+        };
+    };
     return NewRelation;
 }());
 exports.NewRelation = NewRelation;
+var NewRelatedPage = /** @class */ (function () {
+    function NewRelatedPage(type, expression, content) {
+        this.type = type;
+        this.expression = expression;
+        this.content = content;
+    }
+    NewRelatedPage.prototype.toParams = function () {
+        return {
+            type: this.type.type.label,
+            reversed: this.type.reversed,
+            expression: this.expression,
+            content: this.content,
+        };
+    };
+    return NewRelatedPage;
+}());
+exports.NewRelatedPage = NewRelatedPage;
 var UpdatePage = /** @class */ (function () {
     function UpdatePage(id, content) {
         this.id = id;
