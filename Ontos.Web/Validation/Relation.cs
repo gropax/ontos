@@ -15,6 +15,8 @@ namespace Ontos.Web.Validation
             RuleFor(x => x.Type)
                 .Must(type => RelationType.Labels.Contains(type))
                 .WithMessage(x => $"Invalid relation type [{x.Type}].");
+            RuleFor(x => x.OriginId).NotEmpty();
+            RuleFor(x => x.TargetId).NotEmpty();
         }
     }
 }

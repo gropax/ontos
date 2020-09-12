@@ -185,11 +185,10 @@ namespace Scenes.Web.Controllers
         [ProducesResponseType(typeof(RelatedPageDto[]), 200)]
         public async Task<IActionResult> GetPageRelations([FromRoute] long id)
         {
-            //var relations = await _storage.GetAllRelatedPages(id);
-            //var dtos = relations.Select(r => new RelatedPageDto(r)).ToArray();
+            var relations = await _storage.GetAllRelatedPages(id);
+            var dtos = relations.Select(r => new RelatedPageDto(r)).ToArray();
 
-            //return Ok(dtos);
-            return Ok(new object[0]);
+            return Ok(dtos);
         }
 
         /// <summary>
