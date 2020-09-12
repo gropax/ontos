@@ -74,6 +74,15 @@ var PageSearch = /** @class */ (function () {
     return PageSearch;
 }());
 exports.PageSearch = PageSearch;
+var PageSearchResult = /** @class */ (function () {
+    function PageSearchResult(pageId, score, expressions) {
+        this.pageId = pageId;
+        this.score = score;
+        this.expressions = expressions;
+    }
+    return PageSearchResult;
+}());
+exports.PageSearchResult = PageSearchResult;
 var NewExpression = /** @class */ (function () {
     function NewExpression(language, label) {
         this.language = language;

@@ -64,6 +64,14 @@ export class PageSearch {
   }
 }
 
+export class PageSearchResult {
+  constructor(
+    public pageId: string,
+    public score: number,
+    public expressions: string[]) {
+  }
+}
+
 export class NewExpression {
   constructor(
     public language: string,

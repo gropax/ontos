@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Page, PageSearch } from '../../../models/graph';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Page, PageSearch, PageSearchResult } from '../../../models/graph';
 import { Observable, of } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { GraphService } from '../../../services/graph.service';
+import { LanguageSelectorComponent } from '../language-selector/language-selector.component';
 
 @Component({
   selector: 'app-page-selector',
@@ -14,7 +15,10 @@ export class PageSelectorComponent implements OnInit {
   private searching = false;
   private searchFailed = false;
   private page: Page;
-  private language: string;
+
+  @ViewChild(LanguageSelectorComponent, { static: true }) languageSelector: LanguageSelectorComponent;
+
+  get language() { return this.languageSelector.selectedLanguage; }
 
   constructor(private graphService: GraphService) { }
 
@@ -31,7 +35,7 @@ export class PageSelectorComponent implements OnInit {
           tap(() => this.searchFailed = false),
           catchError(() => {
             this.searchFailed = true;
-            return of<Page[]>([]);
+            return of<PageSearchResult[]>([]);
           }))
       ),
       tap(() => this.searching = false)

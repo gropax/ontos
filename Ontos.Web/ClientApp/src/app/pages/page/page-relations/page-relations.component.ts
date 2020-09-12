@@ -19,7 +19,7 @@ export class PageRelationsComponent implements OnInit {
   ngOnInit() {
     this.graphService.getRelatedPages(this.pageId)
       .subscribe(relations => {
-        this.relations$.next(relations);
+        //this.relations$.next(relations);
       });
   }
 

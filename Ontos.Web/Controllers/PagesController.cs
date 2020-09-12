@@ -51,10 +51,13 @@ namespace Scenes.Web.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.ToString());
 
-            var pages = await _storage.SearchPages(searchPageDto.Language, searchPageDto.Text);
-            var dtos = pages;//.Map(s => new PageDto(s));
+            var q = new SearchQuery(searchPageDto.Text);
+            var autocomplete = q.Autocomplete();
 
-            return Ok(pages);
+            var results = await _storage.SearchPages(searchPageDto.Language, autocomplete);
+            var dtos = results.Select(r => new PageSearchResultDto(r));
+
+            return Ok(results);
         }
 
         /// <summary>

@@ -50,6 +50,27 @@ namespace Ontos.Web.Contracts
         }
     }
 
+    public class PageSearchResultDto
+    {
+        public long PageId { get; set; }
+        public double Score { get; set; }
+        public string[] Expressions { get; set; }
+
+        public PageSearchResultDto(long pageId, double score, string[] expressions)
+        {
+            PageId = pageId;
+            Score = score;
+            Expressions = expressions;
+        }
+
+        public PageSearchResultDto(PageSearchResult result)
+        {
+            PageId = result.PageId;
+            Score = result.Score;
+            Expressions = result.Expressions;
+        }
+    }
+
     public class SearchPageDto
     {
         public string Language { get; set; }

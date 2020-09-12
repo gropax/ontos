@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PaginationParams, Paginated } from '../models/pagination';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Page, NewPage, UpdatePage, Reference, NewReference, Relation, NewRelation, RelatedPage, PageSearch } from '../models/graph';
+import { Page, NewPage, UpdatePage, Reference, NewReference, Relation, NewRelation, RelatedPage, PageSearch, PageSearchResult } from '../models/graph';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class GraphService {
   }
 
   public searchPages(params: PageSearch) {
-    return this.http.post<Page[]>(`api/pages/search`, params);
+    return this.http.post<PageSearchResult[]>(`api/pages/search`, params);
   }
 
   public createPage(params: NewPage) {

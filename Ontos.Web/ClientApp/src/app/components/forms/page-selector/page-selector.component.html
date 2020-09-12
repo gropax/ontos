@@ -11,5 +11,8 @@
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+  <span *ngFor="let expression of r.expressions; let i = index">
+    <span *ngIf="i > 0">, </span>
+    <ngb-highlight [result]="expression" [term]="t"></ngb-highlight>
+  </span>
 </ng-template>
