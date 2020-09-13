@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { GraphService } from '../../../services/graph.service';
 import { BehaviorSubject } from 'rxjs';
-import { Relation } from '../../../models/graph';
+import { Relation, RelatedPage } from '../../../models/graph';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-page-relations',
@@ -12,14 +13,23 @@ export class PageRelationsComponent implements OnInit {
 
   @Input() pageId: string;
 
-  private relations$ = new BehaviorSubject<Relation[]>([]);
+  private relatedPages$ = new BehaviorSubject<RelatedPage[]>([]);
 
-  constructor(private graphService: GraphService) { }
+  constructor(private graphService: GraphService) {
+  }
 
   ngOnInit() {
+    this.loadRelatedPages();
+  }
+
+  //ngOnChanges(changes: SimpleChanges) {
+  //  this.loadRelatedPages();
+  //}
+
+  loadRelatedPages() {
     this.graphService.getRelatedPages(this.pageId)
-      .subscribe(relations => {
-        //this.relations$.next(relations);
+      .subscribe(relatedPages => {
+        this.relatedPages$.next(relatedPages);
       });
   }
 

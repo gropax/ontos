@@ -1,5 +1,7 @@
 <body>
   <app-nav-menu></app-nav-menu>
+
+  <!-- For better animation, see https://medium.com/frontend-coach/angular-router-animations-what-they-dont-tell-you-3d2737a7f20b -->
   <div class="container" [@fadeAnimation]="prepareRoute(outlet)">
     <router-outlet #outlet="outlet"></router-outlet>
     <app-notification></app-notification>

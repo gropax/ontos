@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouteReuseStrategy } from '@angular/router';
 
 import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -41,6 +41,7 @@ import { NewRelationModalComponent } from './components/modals/new-relation-moda
 import { NewRelationFormComponent } from './components/forms/new-relation-form/new-relation-form.component';
 import { PageSelectorComponent } from './components/forms/page-selector/page-selector.component';
 import { PageContentFormComponent } from './components/forms/page-content-form/page-content-form.component';
+import { CustomRouteReuseStrategy } from './router-strategy';
 
 @NgModule({
   declarations: [
@@ -118,6 +119,10 @@ import { PageContentFormComponent } from './components/forms/page-content-form/p
   providers: [
     PageResolver,
     ReferencesResolver,
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
+    }
   ],
   bootstrap: [AppComponent]
 })

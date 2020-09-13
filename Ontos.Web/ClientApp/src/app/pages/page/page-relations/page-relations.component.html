@@ -1,5 +1,7 @@
 <app-new-relation-button [pageId]="pageId"></app-new-relation-button>
 
-<div class="accordion" *ngFor="let relation of relations$ | async; let idx = index">
-  <app-page-relation [relation]="relation"></app-page-relation>
-</div>
+<!--<div class="accordion">
+  <app-page-relation *ngFor="let relatedPage of relatedPages$ | async; let idx = index" [relatedPage]="relatedPage"></app-page-relation>
+</div>-->
+
+<app-page-relation *ngFor="let relatedPage of relatedPages$ | async; let idx = index" [relatedPage]="relatedPage"></app-page-relation>

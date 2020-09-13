@@ -29,6 +29,7 @@
     <None Remove="ClientApp\src\app\models\graph.ts" />
     <None Remove="ClientApp\src\app\resolvers\page.resolver.ts" />
     <None Remove="ClientApp\src\app\resolvers\references.resolver.ts" />
+    <None Remove="ClientApp\src\app\router-strategy.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\models\graph.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\resolvers\page.resolver.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\resolvers\references.resolver.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\router-strategy.ts" />
   </ItemGroup>
 
   <ItemGroup>
