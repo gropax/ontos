@@ -297,16 +297,18 @@ namespace Ontos.Storage
 
         private async Task<Page> UpdatePage(IAsyncTransaction transaction, UpdatePage updatePage)
         {
+            var map = new Dictionary<string, object>() {  };
+            if (updatePage.Content != null)
+                map["content"] = updatePage.Content;
+            if (updatePage.Type != null)
+                map["type"] = updatePage.Type.ToString();
+
             var cursor = await transaction.RunAsync(@"
                 MATCH (p:Page)
                 WHERE id(p)=$id
                 SET p += $page
                 RETURN p",
-                new
-                {
-                    id = updatePage.Id,
-                    page = updatePage.Properties,
-                });
+                new { id = updatePage.Id, page = map, });
 
             var page = await cursor.ToListAsync(r => Map.Page(r["p"].As<INode>()));
             return page.First();

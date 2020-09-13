@@ -1,15 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Page = /** @class */ (function () {
-    function Page(id, content, references) {
+    function Page(id, content, type, references) {
         if (references === void 0) { references = []; }
         this.id = id;
         this.content = content;
+        this.type = type;
         this.references = references;
     }
     return Page;
 }());
 exports.Page = Page;
+var PageType = /** @class */ (function () {
+    function PageType(id, label, icon) {
+        this.id = id;
+        this.label = label;
+        this.icon = icon;
+    }
+    PageType.all = function () {
+        return [this.UNKNOWN];
+    };
+    PageType.UNKNOWN = new PageType("Unknown", "Unknown", "fas fa-question");
+    PageType.default = PageType.UNKNOWN;
+    return PageType;
+}());
+exports.PageType = PageType;
 var Reference = /** @class */ (function () {
     function Reference(id, pageId, expression) {
         this.id = id;

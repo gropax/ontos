@@ -12,7 +12,10 @@
   </div>
 </div>-->
 
-<h4><i class="fas fa-question mr-2"></i><span [routerLink]="['/pages', relatedPage.target.id]">{{ title }}</span></h4>
+<h4>
+  <app-page-type-selector [pageId]="relatedPage.target.id" [pageType]="relatedPage.target.type"></app-page-type-selector>
+  <span class="ml-2" [routerLink]="['/pages', relatedPage.target.id]">{{ title }}</span>
+</h4>
 <markdown katex>
   {{ relatedPage.target.content }}
 </markdown>

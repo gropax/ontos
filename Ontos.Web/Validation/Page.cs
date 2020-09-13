@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Ontos.Contracts;
 using Ontos.Web.Contracts;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,17 @@ namespace Ontos.Web.Validation
     {
         public UpdatePageValidator()
         {
-            RuleFor(x => x.Content).NotEmpty();
+            // Update can't be entirely empty (do nothing), but some fields might be.
+            RuleFor(x => x).Must(x => !IsEmpty(x)).WithMessage("Update can't be empty");
+            RuleFor(x => x.Type)
+                .IsEnumName(typeof(PageType), caseSensitive: false)
+                .When(x => !string.IsNullOrEmpty(x.Type));
+        }
+
+        private bool IsEmpty(UpdatePageDto x)
+        {
+            return string.IsNullOrEmpty(x.Content)
+                && string.IsNullOrEmpty(x.Type);
         }
     }
 

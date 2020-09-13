@@ -2,11 +2,39 @@
 
 export class Page {
   constructor(
-    public id: number,
+    public id: string,
     public content: string,
+    public type: string,
     public references: Reference[] = []) {
   }
 }
+
+export class PageType {
+  constructor(
+    public id: string,
+    public label: string,
+    public icon: string) {
+  }
+
+  public static UNKNOWN = new PageType("Unknown", "Unknown", "fas fa-question");
+  public static THEORY = new PageType("Theory", "Theory", "fas fa-atom");
+  public static CONCEPT = new PageType("Concept", "Concept", "far fa-lightbulb");
+
+  static all() {
+    return [
+      this.UNKNOWN,
+      this.THEORY,
+      this.CONCEPT
+    ];
+  }
+
+  public static default = PageType.UNKNOWN;
+
+  public static parse(id: string) {
+    return this.all().find(pageType => pageType.id == id);
+  }
+}
+
 
 export class Reference {
   constructor(
@@ -146,7 +174,8 @@ export class NewRelatedPage {
 
 export class UpdatePage {
   constructor(
-    public id: number,
-    public content: string) {
+    public id: string,
+    public content: string,
+    public type: string) {
   }
 }

@@ -20,6 +20,7 @@ export class EditPageFormComponent implements OnInit {
     return new UpdatePage(
       this.page.id,
       this.pageForm.get('content').value,
+      null
     );
   }
 

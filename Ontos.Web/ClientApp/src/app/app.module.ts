@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, RouteReuseStrategy } from '@angular/router';
 
-import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbToastModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule, NgbTypeaheadModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TimeagoModule } from 'ngx-timeago';
 import { MarkdownModule } from 'ngx-markdown';
@@ -42,6 +42,7 @@ import { NewRelationFormComponent } from './components/forms/new-relation-form/n
 import { PageSelectorComponent } from './components/forms/page-selector/page-selector.component';
 import { PageContentFormComponent } from './components/forms/page-content-form/page-content-form.component';
 import { CustomRouteReuseStrategy } from './router-strategy';
+import { PageTypeSelectorComponent } from './components/forms/page-type-selector/page-type-selector.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { CustomRouteReuseStrategy } from './router-strategy';
     NewRelationFormComponent,
     PageSelectorComponent,
     PageContentFormComponent,
+    PageTypeSelectorComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -112,6 +114,7 @@ import { CustomRouteReuseStrategy } from './router-strategy';
     NgbTooltipModule,
     NgbCollapseModule,
     NgbTypeaheadModule,
+    NgbDropdownModule,
     FontAwesomeModule,
     TimeagoModule.forRoot(),
     MarkdownModule.forRoot(),

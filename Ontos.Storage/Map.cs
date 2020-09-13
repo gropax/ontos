@@ -14,6 +14,7 @@ namespace Ontos.Storage
             return new Page(
                 node.Id,
                 node["content"].As<string>(),
+                Enum.Parse<PageType>(node["type"].As<string>()),
                 DateTime.Parse(node["created_at"].As<string>()).ToUniversalTime(),
                 DateTime.Parse(node["updated_at"].As<string>()).ToUniversalTime());
         }

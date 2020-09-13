@@ -11,12 +11,14 @@ namespace Ontos.Web.Contracts
     {
         public long Id { get; set; }
         public string Content { get; set; }
+        public string Type { get; set; }
         public ReferenceDto[] References { get; set; }
 
-        public PageDto(long id, string content, ReferenceDto[] references)
+        public PageDto(long id, string content, string type, ReferenceDto[] references)
         {
             Id = id;
             Content = content;
+            Type = type;
             References = references ?? new ReferenceDto[0];
         }
 
@@ -24,6 +26,7 @@ namespace Ontos.Web.Contracts
         {
             Id = page.Id;
             Content = page.Content;
+            Type = page.Type.ToString();
             References = page.References.Select(r => new ReferenceDto(r)).ToArray();
         }
     }
@@ -32,10 +35,12 @@ namespace Ontos.Web.Contracts
     {
         public string Content { get; set; }
         public NewExpressionDto Expression { get; set; }
+        public string Type { get; set; }
 
         public NewPage ToModel()
         {
-            return new NewPage(Content, Expression?.ToModel());
+            var type = string.IsNullOrWhiteSpace(Type) ? default : Enum.Parse<PageType>(Type);
+            return new NewPage(Content, Expression?.ToModel(), type);
         }
     }
 
@@ -43,10 +48,12 @@ namespace Ontos.Web.Contracts
     {
         public long Id { get; set; }
         public string Content { get; set; }
+        public string Type { get; set; }
 
         public UpdatePage ToModel()
         {
-            return new UpdatePage(Id, Content);
+            var type = string.IsNullOrWhiteSpace(Type) ? default : Enum.Parse<PageType>(Type);
+            return new UpdatePage(Id, Content, type);
         }
     }
 

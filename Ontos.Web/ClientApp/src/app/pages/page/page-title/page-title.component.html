@@ -1,6 +1,10 @@
 <h1 hover-class="hovered">
-  <i *ngIf="referenceCount == 0">Untitled</i>
-  <span *ngIf="referenceCount > 0">{{ title }}</span>
+  <app-page-type-selector [pageId]="page.id" [pageType]="page.type"></app-page-type-selector>
+
+  <span class="ml-3">
+    <i *ngIf="referenceCount == 0">Untitled</i>
+    <span *ngIf="referenceCount > 0">{{ title }}</span>
+  </span>
 
   <ng-content></ng-content>
 </h1>

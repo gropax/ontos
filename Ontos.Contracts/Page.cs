@@ -8,21 +8,23 @@ namespace Ontos.Contracts
     {
         public long Id { get; }
         public string Content { get; }
+        public PageType Type { get; }
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; }
         public Reference[] References { get; }
 
-        public Page(long id, string content, DateTime createdAt, DateTime updatedAt, Reference[] references = null)
+        public Page(long id, string content, PageType type, DateTime createdAt, DateTime updatedAt, Reference[] references = null)
         {
             Id = id;
             Content = content;
+            Type = type;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
             References = references ?? new Reference[0];
         }
 
         public Page(Page page, Reference[] references)
-            : this(page.Id, page.Content, page.CreatedAt, page.UpdatedAt, references)
+            : this(page.Id, page.Content, page.Type, page.CreatedAt, page.UpdatedAt, references)
         { }
 
         #region Equality methods
@@ -42,6 +44,12 @@ namespace Ontos.Contracts
         #endregion
     }
 
+    public enum PageType {
+        Unknown = 0,
+        Theory,
+        Concept,
+    }
+
     public enum PageSortKey
     {
         CreatedAt,
@@ -52,17 +60,20 @@ namespace Ontos.Contracts
     {
         public string Content { get; }
         public NewExpression Expression { get; }
+        public PageType Type { get; }
         public object Properties => new
         {
             content = Content,
+            type = Type.ToString(),
             created_at = DateTime.UtcNow,
             updated_at = DateTime.UtcNow,
         };
 
-        public NewPage(string content, NewExpression newExpression = null)
+        public NewPage(string content, NewExpression newExpression = null, PageType type = default)
         {
             Content = content;
             Expression = newExpression;
+            Type = type;
         }
     }
 
@@ -70,16 +81,18 @@ namespace Ontos.Contracts
     {
         public long Id { get; }
         public string Content { get; }
+        public PageType? Type { get; }
         public object Properties => new
         {
             content = Content,
             updated_at = DateTime.UtcNow,
         };
 
-        public UpdatePage(long id, string content)
+        public UpdatePage(long id, string content = null, PageType? type = null)
         {
             Id = id;
             Content = content;
+            Type = type;
         }
     }
 

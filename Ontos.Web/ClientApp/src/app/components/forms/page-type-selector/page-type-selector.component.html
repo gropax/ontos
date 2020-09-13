@@ -1,0 +1,14 @@
+<span ngbDropdown>
+  <button role="button" ngbDropdownToggle>
+    <div *ngIf="loading" class="spinner-border mb-2" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <i *ngIf="!loading" [ngClass]="type.icon"></i>
+  </button>
+  <span ngbDropdownMenu>
+    <button ngbDropdownItem *ngFor="let type of types" (click)="updateType(type)">
+      <i [ngClass]="type.icon"></i>
+      <span class="ml-2"></span>{{ type.label }}
+    </button>
+  </span>
+</span>

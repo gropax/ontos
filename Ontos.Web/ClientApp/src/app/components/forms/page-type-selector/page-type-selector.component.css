@@ -1,0 +1,13 @@
+button {
+  background-color: white;
+  border: none !important;
+  border-radius: 5px;
+}
+
+button:after {
+  content: none;
+}
+
+button:hover {
+  background-color: #e8e9eb
+}

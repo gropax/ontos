@@ -17,6 +17,7 @@ export class PageTitleComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.page);
   }
 
   private get referenceCount() {
